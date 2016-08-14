@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<title>Install/Uninstall instruction for the Geeklog Open Graph Protocol plugin</title>
+	<style type="text/css">
+	<!-->
+		body {
+			color: black;
+			background-color: white;
+			line-height: 1.5em;
+		}
+		.geeklog {
+			background-color: yellow;
+		}
+		.public {
+			background-color: #99ff00;
+		}
+		.admin {
+			background-color: aqua;
+		}
+	<! -->
+	</style>
+</head>
+
+<body>
+	<h1>Install/Uninstall instruction for the Geeklog OGP(Open Graph Protocol) plugin</h1>
+
+	<p>In the following descriptions</p>
+	<ul>
+		<li><span class="geeklog">&lt;geeklog_dir&gt;</span> is the directory where the system config.php file resides</li>
+		<li><span class="admin">&lt;admin&gt;</span> is the directory where the administration files reside (usually, under <span class="public">&lt;public_html&gt;</span>)</li>
+	</ul>
+
+	<h2>INSTALL:</h2>
+
+	<ol>
+		<li>Uncompress the ogp plugin archive while in the <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins directory.  The archive will create a directory called ogp in the plugins directory.</li>
+		<li>Create the admin directory.  Under your <span class="admin">&lt;admin&gt;</span>/plugins/ directory create a directory called ogp.</li>
+		<li>Change to your <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/ directory.  Copy the files in the admin directory to the <span class="admin">&lt;admin&gt;</span>/plugins/ogp/ directory your created in step 2.</li>
+		<li>Change <span class="public">&lt;public_html&gt;</span>/layout/your_theme/header.thtml.<br>
+		(before) <code>&lt;html{html_attribute}{xmlns}&gt;</code><br>
+		(after) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
+		</li>
+		<li>Log in to your Geeklog as a root user and click on "Plugins", then hit "intall" button.  The OGP plugin should now be installed and functioning.</li>
+		<li><strong>IMPORTANT</strong>: Go to Configuration Panel and set your Facebook User ID(s).  If you don't know your Facebook User ID, then use <a href="http://apps.facebook.com/what-is-my-user-id/">This App</a>.</li>
+	</ol>
+
+	<h2>UNINSTALL:</h2>
+
+	<ol>
+		<li>Log in to your Geeklog as a root user and click on "Plugins", then hit "unintall" button.</li>
+		<li>Delete the two plugin directories created in the install process:  <span class="geeklog">&lt;geeklog-dir&gt;</span>/plugins/ogp/ and /ogp/ and <span class="admin">&lt;admin&gt;</span>/plugins/ogp/</li>
+	</ol>
+
+	<p>That's it.</p>
+
+</body>
+</html>

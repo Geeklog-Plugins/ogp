@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<title>Geeklog OGP(Open Graph Protocol)プラグインのインストール/アンインストール</title>
+	<style type="text/css">
+	<!-->
+		body {
+			color: black;
+			background-color: white;
+			line-height: 1.5em;
+		}
+		.geeklog {
+			background-color: yellow;
+		}
+		.public {
+			background-color: #99ff00;
+		}
+		.admin {
+			background-color: aqua;
+		}
+		li {
+			padding: 5px 5px 10px 5px;
+		}
+	<! -->
+	</style>
+</head>
+
+<body>
+	<h1>Geeklog Open Graph Protocol プラグインのインストール/アンインストール</h1>
+
+	<h2>インストール:</h2>
+	
+	<p>以下の説明で、</p>
+	<ul>
+		<li><span class="geeklog">&lt;geeklog_dir&gt;</span>は、システムの config.php が存在するディレクトリ</li>
+		<li><span class="public">&lt;public_html&gt;</span>は、lib-common.php が存在するディレクトリ</li>
+		<li><span class="admin">&lt;admin&gt;</span>は、管理者用ファイルが存在するディレクトリ（ふつうは、<span class="public">&lt;public_html&gt;</span>ディレクトリの下）</li>
+	</ul>
+	<p>を表しています。</p>
+
+	<ol>
+		<li>ogpプラグインのアーカイブを<span class="geeklog">&lt;geeklog_dir&gt;</span>/pluginsディレクトリに展開します。ogpという名前のディレクトリができます。</li>
+		<li>adminディレクトリを作ります。<span class="admin">&lt;admin&gt;</span>/plugins/ ディレクトリの下にogpという名前のディレクトリを作ります。</li>
+		<li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/ ディレクトリに移動します。adminディレクトリの内容を、2.で作成した <span class="admin">&lt;admin&gt;</span>/plugins/ogp/ ディレクトリにコピーします。</li>
+		<li><span class="public">&lt;public_html&gt;</span>/layout/使用するテーマ/header.thtmlを修正します。<br>
+		(before) <code>&lt;html{html_attribute}{xmlns}&gt;</code><br>
+		(after) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
+		</li>
+		<li>Rootユーザーとしてログインし、プラグインエディタからインストールを実行します。失敗した場合には、エラーログ（error.log）を調べます。この時点で、ogpプラグインはインストールされ、機能しているはずです。</li>
+		<li><strong>重要</strong>: コンフィギュレーションでFacebookユーザーIDを設定してください。ユーザーIDがわからない場合は、<a href="http://apps.facebook.com/what-is-my-user-id/">このアプリケーション</a>が便利です。</li>
+	</ol>
+
+	<h2>アンインストール:</h2>
+
+	<ol>
+		<li>プラグインエディタから、ogp プラグインをアンインストールします。</li>
+		<li>インストールの過程で作成した2つのディレクトリ（<span class="geeklog">&lt;geeklog-dir&gt;</span>/plugins/ogp/と<span class="admin">&lt;admin&gt;</span>/plugins/ogp/ を削除します。</li>
+	</ol>
+
+	<p>これでおしまいです。</p>
+
+</body>
+</html>
