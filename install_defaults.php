@@ -66,8 +66,7 @@ function plugin_initconfig_ogp() {
 
         $c->add('sg_main', NULL, 'subgroup', 0, 0, NULL, 0, TRUE, $me);
         $c->add('fs_main', NULL, 'fieldset', 0, 0, NULL, 0, TRUE, $me);
-        $c->add('fb_user_ids', '', 'text', 0, 0, NULL, 10, TRUE, $me);
-        $c->add('fb_app_id', '', 'text', 0, 0, NULL, 20, TRUE, $me);
+        $c->add('facebook_ids', '', 'text', 0, 0, NULL, 10, TRUE, $me);
     }
 	
     return TRUE;

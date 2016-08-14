@@ -30,9 +30,9 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), strtolower(basename(__FILE__))) !==
 }
 
 $LANG_OGP = array (
-    'plugin'           	=> 'OGP',
-	'admin'		       	=> 'OGP',
-	'fb_ids_not_set'	=> 'OGP: エラー!　最初に「コンフィギュレーション」でFacebookユーザーIDかFacebookアプリケーションIDのいずれかを指定してください。',
+    'plugin'            	=> 'OGP',
+	'admin'		        	=> 'OGP',
+	'facebook_ids_not_set'	=> 'OGP: エラー!　最初に「コンフィギュレーション」でFacebookユーザーIDを指定してください。',
 );
 
 
@@ -46,8 +46,7 @@ $LANG_configsections['ogp'] = array(
 );
 
 $LANG_confignames['ogp'] = array(
-	'fb_user_ids'	=> 'FacebookユーザーID',
-	'fb_app_id'		=> 'FacebookアプリケーションID',
+	'facebook_ids'	=> 'FacebookユーザーID',
 );
 
 $LANG_configsubgroups['ogp'] = array(
