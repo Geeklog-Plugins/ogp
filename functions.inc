@@ -297,6 +297,44 @@ function plugin_getheadercode_ogp() {
 				$desc = $content;
 			}
 		}
+	} else if (in_array('calendar', $_PLUGINS)
+	 AND preg_match("@calendar/event\.php\?eid=(.+)$@i", $url, $match)) {
+		// Calendar
+		$sql = "SELECT title, description, event_type, location "
+			 . "FROM {$_TABLES['events']} "
+			 . "WHERE (eid = '" . addslashes($match[1]) . "') "
+			 . COM_getPermSQL('AND');
+		$result = DB_query($sql);
+		
+		if (!DB_error() AND (DB_numRows($result) == 1)) {
+			$A = DB_fetchArray($result, FALSE);
+			$title = $A['title'];
+			$desc  = $A['description'];
+			
+			if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $desc, $m)) {
+				$image = $m[1];
+				$image = OGP_fixUri($image);
+			}
+		}
+	} else if (in_array('calendarjp', $_PLUGINS)
+	 AND preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url, $match)) {
+		// Calendar
+		$sql = "SELECT title, description, event_type, location "
+			 . "FROM {$_TABLES['eventsjp']} "
+			 . "WHERE (eid = '" . addslashes($match[1]) . "') "
+			 . COM_getPermSQL('AND');
+		$result = DB_query($sql);
+		
+		if (!DB_error() AND (DB_numRows($result) == 1)) {
+			$A = DB_fetchArray($result, FALSE);
+			$title = $A['title'];
+			$desc  = $A['description'];
+			
+			if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $desc, $m)) {
+				$image = $m[1];
+				$image = OGP_fixUri($image);
+			}
+		}
 	}
 
 	// <og:site_name> tag and <og:description> tag are optional, but are
@@ -730,9 +768,16 @@ function OGP_gerArgs($str) {
 * @return  boolean TRUE = supported, FALSE = otherwise
 */
 function OGP_isSupportedItem($url) {
-
-	return preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url)
-	 OR preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url);
+	global $_PLUGINS;
+	
+	if (preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url)
+	 OR (in_array('staticpages', $_PLUGINS) AND preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url))
+	 OR (in_array('calendar', $_PLUGINS) AND preg_match("@calendar/event\.php\?eid=(.+)$@i", $url))
+	 OR (in_array('calendarjp', $_PLUGINS) AND preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url))) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
 }
 
 /**

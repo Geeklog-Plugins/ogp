@@ -17,7 +17,7 @@
 		</tr>
 		<tr>
 			<th>最新バージョン</th>
-			<td>1.1.0 (2011-09-11)</td>
+			<td>1.1.1 (2011-09-16)</td>
 		</tr>
 		<tr>
 			<th>システム要件</th>
@@ -32,12 +32,18 @@
 	<h2>概要</h2>
 	
 	<p>OGPプラグインは<a href="http://ogp.me/">Open Graph Protocol</a>（以下、OGP）をサポートしており、Geeklogサイトと<a href="http://developers.facebook.com/docs/opengraph/">Facebook</a>などのOGPをサポートするサイトとの連携を可能にします。</p>
+	<p>また、「いいね!」ボタンやFacebookコメントを、記事やカレンダープラグイン（calendarjpを含む）、リンクプラグインで表示する機能も備えています。</p>
 	
 	<h2>インストール前の準備</h2>
 	
 	<ul>
 		<li>FacebookのユーザーIDを確認しておきます。ユーザーIDがわからない場合は、<a href="http://apps.facebook.com/what-is-my-user-id/">このアプリケーション</a>が便利です。</li>
-		<li>「いいね!」ボタンやコメント機能を使用する場合は、FacebookのアプリケーションIDを取得する必要があります。取得するには、<a href="https://developers.facebook.com/apps">ここをクリック</a>してから、<strong>+ Create New App</strong>をクリックします。「App Name」は"Facebook"を<strong>含まない</strong>適当な文字列を入力、「Locale」は日本語を選択、「I agree to the Facebook利用規約」にチェックを入れてから「続行」をクリックします。セキュリティチェックの画面では、CAPTCHAによる認証があります。文字が読み取りにくい場合は「別の単語を表示」をクリックして判別できるものが表示されるまで粘り強く続けてください。次の画面に遷移したら、アプリケーションID(App ID)をメモしておきます。</li>
+		<li>「いいね!」ボタンやコメント機能を使用する場合は、FacebookのアプリケーションIDを取得する必要があります。取得するには、<a href="https://developers.facebook.com/apps">ここをクリック</a>してから、<strong>+ Create New App</strong>をクリックします。<br>
+			<ol>
+				<li>「App Name」は"Facebook"を<strong>含まない</strong>適当な文字列を入力、「Locale」は日本語を選択、「I agree to the Facebook利用規約」にチェックを入れてから「続行」をクリックします。</li>
+				<li>セキュリティチェックの画面では、CAPTCHAによる認証があります。文字が読み取りにくい場合は「別の単語を表示」をクリックして判別できるものが表示されるまで粘り強く続けてください。</li>
+				<li>次の画面に遷移したら、アプリケーションID(App ID)をメモします。次に、画面の下の方にある<strong>Select how your app integrates with Facebook</strong>のすぐ下にある<strong>Website</strong>をクリックし、<strong>サイトURL</strong>にOGPプラグインをインストールするサイトのURLを入力してから、「変更を保存」をクリックします。</li>
+			</ol></li>
 	</ul>
 	
 	<h2>インストール</h2>
@@ -78,8 +84,61 @@
 		</code>
 		<p><strong>FacebookアプリケーションID</strong>、<strong>サイトのURL</strong>は適切な値に置き換えます。日本語以外に対応するには、<strong>ja_JP</strong>の部分を希望するロケールに変更します。対応しているロケールは<a href="http://www.facebook.com/translations/FacebookLocales.xml">こちらのXMLファイル</a>を参照してください。なお、Geeklog-1.8.0以降の場合、この作業は不要です。</p></li>
 		<li>Rootユーザーとしてログインし、プラグインエディタからインストールを実行します。失敗した場合には、エラーログ（error.log）を調べます。</li>
-		<li><strong>重要</strong>: コンフィギュレーション &gt; OGPでFacebookユーザーIDとFacebookアプリケーションIDを指定します。「いいね!」ボタンやコメント機能を使用しない場合、後者の設定は不要です。この時点で、「いいね!」ボタンやコメント機能は自動タグとして利用可能になっています（それぞれ、<strong>[ogp:like]</strong>と<strong>[ogp:comments]</strong>）。</li>
+		<li><strong>重要</strong>: コンフィギュレーション &gt; OGPでFacebookユーザーIDとFacebookアプリケーションIDを指定します。「いいね!」ボタンやコメント機能を使用しない場合、後者の設定は不要です。設定した場合は、この時点で「いいね!」ボタンやコメント機能は自動タグとして利用可能になっています（それぞれ、<strong>[ogp:like]</strong>と<strong>[ogp:comments]</strong>）。</li>
 		<li>「いいね!」ボタンやコメント機能が記事で自動的に表示されるようにするには、テンプレートファイルに追加します。上記header.thtmlと同じディレクトリ内にあるfeaturedstorytext.thtmlとstorytext.thtmlにテンプレート変数を追加します。「いいね!」ボタンは<strong>{ogp_like}</strong>、コメント機能は<strong>{ogp_comments}</strong>です。</li>
+		<li>カレンダープラグインでは以下の2つの手順を踏む必要があります。<br>
+			<ol>
+				<li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/calendar/templates/eventdetails.thtmlの一番下の部分に、<strong>{ogp_like}</strong>や<strong>{ogp_comments}</strong>を追加する。</li>
+				<li><span class="public">&lt;public_html&gt;</span>/calendar/event.phpの510行目付近にある<br>
+<code>$cal_templates = COM_newTemplate($_CONF['path'] . 'plugins/calendar/templates/');<br>
+$cal_templates-&gt;set_file (array (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'events'    =&gt; 'events.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'details'   =&gt; 'eventdetails.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'addremove' =&gt; 'addremoveevent.thtml'<br>
+));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+$cal_templates-&gt;set_var ('lang_addevent', $LANG_CAL_1[6]);<br>
+</code><p>を</p>
+<code>$cal_templates = COM_newTemplate($_CONF['path'] . 'plugins/calendar/templates/');<br>
+$cal_templates-&gt;set_file (array (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'events'    =&gt; 'events.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'details'   =&gt; 'eventdetails.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'addremove' =&gt; 'addremoveevent.thtml'<br>
+));<br>
+<strong>$cal_templates-&gt;set_var('ogp_like', OGP_like());</strong><br>
+<strong>$cal_templates-&gt;set_var('ogp_comments', OGP_comments());</strong><br>
+$cal_templates-&gt;set_var ('lang_addevent', $LANG_CAL_1[6]);<br>
+</code><p>に変更する。</p></li>
+			</ol>
+		</li>
+		<li>カレンダーjpプラグインでは以下の2つの手順を踏む必要があります。<br>
+			<ol>
+				<li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/calendarjp/templates/eventdetails.thtmlの一番下の部分に、<strong>{ogp_like}</strong>や<strong>{ogp_comments}</strong>を追加する。</li>
+				<li><span class="public">&lt;public_html&gt;</span>/calendarjp/event.phpの520行目付近にある<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;$cal_templates = COM_newTemplate($_CONF['path'] . 'plugins/calendarjp/templates/');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$cal_templates = COM_newTemplate($_CONF['path'] . 'plugins/calendarjp/templates/');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$cal_templates-&gt;set_file (array (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'events'    =&gt; 'events' . ($ja ? '_ja' : '') . '.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'details'   =&gt; 'eventdetails.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'addremove' =&gt; 'addremoveevent.thtml'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;));<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$cal_templates-&gt;set_var ('lang_addevent', $LANG_CALJP_1[6]);<br>
+</code><p>を</p>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;$cal_templates = COM_newTemplate($_CONF['path'] . 'plugins/calendarjp/templates/');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$cal_templates = COM_newTemplate($_CONF['path'] . 'plugins/calendarjp/templates/');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$cal_templates-&gt;set_file (array (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'events'    =&gt; 'events' . ($ja ? '_ja' : '') . '.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'details'   =&gt; 'eventdetails.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'addremove' =&gt; 'addremoveevent.thtml'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>$cal_templates-&gt;set_var('ogp_like', OGP_like());</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>$cal_templates-&gt;set_var('ogp_comments', OGP_comments());</strong><br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;$cal_templates-&gt;set_var ('lang_addevent', $LANG_CALJP_1[6]);<br>
+</code><p>に変更する。</p></li>
+			</ol>
+		</li>
 		<li>「いいね!」ボタンやコメント機能の設定は、コンフィギュレーション &gt; OGPで行います。</li>
 	</ol>
 
@@ -97,6 +156,13 @@
 			<th>バージョン</th>
 			<th>日付(YYYY-MM-DD)</th>
 			<th>詳細</th>
+		</tr>
+		<tr>
+			<td>1.1.1</td>
+			<td>2011-09-16</td>
+			<td>
+				<span class="new">&nbsp;New! </span>&nbsp;カレンダープラグインとカレンダーjpプラグインをサポートしました。
+			</td>
 		</tr>
 		<tr>
 			<td>1.1.0</td>

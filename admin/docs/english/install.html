@@ -17,7 +17,7 @@
 		</tr>
 		<tr>
 			<th>Latest version</th>
-			<td>1.1.0 (2011-09-11)</td>
+			<td>1.1.1 (2011-09-16)</td>
 		</tr>
 		<tr>
 			<th>System requirements</th>
@@ -32,14 +32,22 @@
 	<h2>Abstract</h2>
 	
 	<p>OGP plugin supports <a href="http://ogp.me/">Open Graph Protocol</a>(OGP) and allows you to run your Geeklog site in cooperation with web sites supporting OGP such as <a href="http://developers.facebook.com/docs/opengraph/">Facebook</a>.</p>
+	<p>Besides, the plugin allows you to display Facebook like buttons and/or Facebook comments in your articles and calendar events.</p>
 	
 	<h2>Before installation</h2>
 	
 	<ul>
 		<li>Confirm your Facebook user ID.  In case you don't know your ID, <a href="http://apps.facebook.com/what-is-my-user-id/">This application</a> is handy.</li>
-		<li>If you want to use Facebook Like button or Facebook comments, you have to aquire an application ID at <a href="https://developers.facebook.com/apps">Facebook Developers</a>.  Click on <strong>+ Create New App</strong>.  In the dialog, enter some string (which DOES NOT include "Facebook") as "App Name", select your locale, check "Facebook terms of use" and click on "continue".  In the following you have to get security check.  Enter two words in the CAPTCHA dialog.  If words are hard to discern, then keep clicking "display other words" till you get ones you can recognize.  In the following screen, write down your <strong>App ID</strong>.</li>
+		<li>If you want to use Facebook Like button or Facebook comments, you have to acquire an application ID at <a href="https://developers.facebook.com/apps">Facebook Developers</a>.  Click on <strong>+ Create New App</strong>.<br>
+			<ol>
+				<li>In the dialog, enter some string (which DOES NOT include "Facebook") as "App Name", select your locale, check "Facebook terms of use" and click on "continue".</li>
+				<li>In the following screen, you have to get security check.  Enter two words in the CAPTCHA dialog.  If words are hard to discern, then keep clicking "display other words" till you get ones you can recognize.</li>
+				<li>In the following screen, write down your <strong>App ID</strong>.  Next, click on <strong>Website</strong> just below <strong>Select how your app integrates with Facebook</strong> and enter your site URL and save.</li>
+			</ol></li>
 	</ul>
 	
+	<h2>Install</h2>
+
 	<p>In the following descriptions,</p>
 	
 	<ul>
@@ -47,8 +55,6 @@
 		<li><span class="public">&lt;public_html&gt;</span> is the directory where lib-common.php file resides</li>
 		<li><span class="admin">&lt;admin&gt;</span> is the directory where the administration files reside (usually, under <span class="public">&lt;public_html&gt;</span>)</li>
 	</ul>
-
-	<h2>Install</h2>
 
 	<ol>
 		<li>Uncompress the ogp plugin archive while in the <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins directory.  The archive will create a directory called ogp in the plugins directory.</li>
@@ -80,6 +86,31 @@
 		<li>Log in to your Geeklog as a root user, go to the plugin editor and install OGP plugin.</li>
 		<li><strong>IMPORTANT</strong>: Go to Configuration Panel and set either your Facebook User ID(s) or your Facebook Applicatin ID.  If you are not going to use Facebook Like button or Fcebook comments, then you don't have to set the latter.  After setting the two items, you have Like button and Facebook comments available as autotags (<strong>[ogp:like]</strong> and <strong>[ogp:comments]</strong> respectively).</li>
 		<li>If you want to show Like button or Facebook comments without embedding the above autotags into articles, then you have to add template variables to templates.  In featuredstorytext.thtml and storytext.thtml, you have to add <strong>{ogp_like}</strong> (for like button) and <strong>{ogp_comments}</strong> (for Facebook comments).</li>
+		<li>If you want to show Like button or Facebook comments with the calendar plugin, you have to take the two following steps:<br>
+			<ol>
+				<li>At the bottom of <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/calendar/templates/eventdetails.thtml, add <strong>{ogp_like}</strong> and/or <strong>{ogp_comments}</strong> template variables.</li>
+				<li>Find the next code in <span class="public">&lt;public_html&gt;</span>/calendar/event.php at line number 504<br>
+<code>$cal_templates = COM_newTemplate($_CONF['path'] . 'plugins/calendar/templates/');<br>
+$cal_templates-&gt;set_file (array (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'events'    =&gt; 'events.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'details'   =&gt; 'eventdetails.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'addremove' =&gt; 'addremoveevent.thtml'<br>
+));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+$cal_templates-&gt;set_var ('lang_addevent', $LANG_CAL_1[6]);<br>
+</code><p>and change the above code into this:</p>
+<code>$cal_templates = COM_newTemplate($_CONF['path'] . 'plugins/calendar/templates/');<br>
+$cal_templates-&gt;set_file (array (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'events'    =&gt; 'events.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'details'   =&gt; 'eventdetails.thtml',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'addremove' =&gt; 'addremoveevent.thtml'<br>
+));<br>
+<strong>$cal_templates-&gt;set_var('ogp_like', OGP_like());</strong><br>
+<strong>$cal_templates-&gt;set_var('ogp_comments', OGP_comments());</strong><br>
+$cal_templates-&gt;set_var ('lang_addevent', $LANG_CAL_1[6]);<br>
+</code></li>
+			</ol>
+		</li>
 		<li>To configure like buttons and/or Facebook comments, go to Configuration &gt; OGP.</li>
 	</ol>
 
@@ -97,6 +128,13 @@
 			<th>Version</th>
 			<th>Date(YYYY-MM-DD)</th>
 			<th>Detail</th>
+		</tr>
+		<tr>
+			<td>1.1.1</td>
+			<td>2011-09-16</td>
+			<td>
+				<span class="new">&nbsp;New! </span>&nbsp; Supported Calendar plugin.
+			</td>
 		</tr>
 		<tr>
 			<td>1.1.0</td>
