@@ -500,6 +500,11 @@ function plugin_upgrade_ogp() {
 				$pi_version = '1.1.2';
 				break;
 			
+			case '1.1.2':
+				// Does nothing
+				$pi_version = '1.1.3';
+				break;
+			
 			default:
 				break;
 		
