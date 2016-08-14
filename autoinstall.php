@@ -37,6 +37,8 @@ if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== FALSE) {
 * @return   array               Plugin information
 */
 function plugin_autoinstall_ogp($pi_name) {
+	global $_OGP_CONF;
+	
 	require_once dirname(__FILE__) . '/config.php';
 	
 	$pi_name         = 'ogp';

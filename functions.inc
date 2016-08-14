@@ -478,26 +478,35 @@ function plugin_chkVersion_ogp() {
 function plugin_upgrade_ogp() {
 	global $_CONF, $_TABLES, $_OGP_CONF;
 
-	$sql = "SELECT pi_version "
-		 . "FROM {$_TABLES['plugins']} "
-		 . "WHERE (pi_name = 'ogp') ";
-	$result = DB_query($sql);
-	$A = DB_fetchArray($result);
-	$pi_version = $A['pi_version'];		// Version info stored in database
-
-	// Do upgrading
-
-// 	switch ($pi_version) {
-// 		case '':
-// 		break;
-// 		
-// 		case '':
-// 		break;
-// 		
-// 	}
+	$pi_version = DB_getItem($_TABLES['plugins'], 'pi_version', "pi_name = 'ogp'");
+	$done = FALSE;
+	
+	while ($pi_version !== $_OGP_CONF['pi_version']) {
+		switch ($pi_version) {
+			case '1.0.0':
+			case '1.0.1':
+			case '1.0.2':
+			case '1.0.4':
+			case '1.1.0':
+			case '1.1.1':
+				require_once dirname(__FILE__) . '/install_defaults.php';
+				
+				$c = config::get_instance();
+				$c->add('fs_kinds', NULL, 'fieldset', 0, 3, NULL, 0, TRUE, 'ogp');
+				$c->add(
+					'types', $_OGP_DEFAULT['types'], '%text', 0, 3, NULL, 140,
+					TRUE, 'ogp'
+				);
+				$pi_version = '1.1.2';
+				break;
+			
+			default:
+				break;
+		
+		}
+	}
 
 	// Updates plugin info
-
 	$sql = "UPDATE {$_TABLES['plugins']} "
 		 . "SET pi_version = '" . addslashes($_OGP_CONF['pi_version']) . "' "
 		 . "WHERE (pi_name = 'ogp') ";
@@ -768,12 +777,17 @@ function OGP_gerArgs($str) {
 * @return  boolean TRUE = supported, FALSE = otherwise
 */
 function OGP_isSupportedItem($url) {
-	global $_PLUGINS;
+	global $_PLUGINS, $_OGP_CONF;
 	
-	if (preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url)
-	 OR (in_array('staticpages', $_PLUGINS) AND preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url))
-	 OR (in_array('calendar', $_PLUGINS) AND preg_match("@calendar/event\.php\?eid=(.+)$@i", $url))
-	 OR (in_array('calendarjp', $_PLUGINS) AND preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url))) {
+	// Article
+	if ((in_array('article', $_OGP_CONF['types']) AND preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url)) 
+	 OR (in_array('staticpages', $_PLUGINS) AND in_array('staticpages', $_OGP_CONF['types']) AND preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url))
+	 OR (in_array('calendar', $_PLUGINS) AND in_array('calendar', $_OGP_CONF['types']) AND preg_match("@calendar/event\.php\?eid=(.+)$@i", $url))
+	 OR (in_array('calendarjp', $_PLUGINS) AND in_array('calendarjp', $_OGP_CONF['types']) AND preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url))
+	 OR (in_array('links', $_PLUGINS) AND in_array('links', $_OGP_CONF['types']) AND preg_match("@links/index\.php(?:\?category=(.+))?$@i", $url))
+	 OR (in_array('polls', $_PLUGINS) AND in_array('polls', $_OGP_CONF['types']) AND preg_match("@polls/index\.php(?:\?pid=(.+))?$@i", $url))
+	 OR (in_array('filemgmt', $_PLUGINS) AND in_array('filemgmt', $_OGP_CONF['types']) AND preg_match("@filemgmt/index\.php(?:\?id=|/)\d+$@i", $url))
+	 OR (in_array('downloads', $_PLUGINS) AND in_array('downloads', $_OGP_CONF['types']) AND preg_match("@downloads/index\.php(?:\?id=|/).+$@i", $url))) {
 		return TRUE;
 	} else {
 		return FALSE;

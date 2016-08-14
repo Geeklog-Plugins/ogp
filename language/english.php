@@ -55,6 +55,9 @@ $LANG_confignames['ogp'] = array(
 	'comments_num_posts'	=> 'Number of posts',
 	'comments_width'		=> 'Width (pixels)',
 	'comments_color'		=> 'Color Scheme',
+	
+	// Since v1.1.2
+	'types'					=> 'Types',
 );
 
 $LANG_configsubgroups['ogp'] = array(
@@ -65,6 +68,7 @@ $LANG_fs['ogp'] = array(
     'fs_main'        		=> 'OGP Main Settings',
 	'fs_like'				=> 'Facebook Like button',
 	'fs_comments'			=> 'Facebook Comments',
+	'fs_kinds'				=> 'Kinds of Contents',
 );
 
 // Note: entries 0, 1, 9, and 12 are the same as in $LANG_configselects['Core']

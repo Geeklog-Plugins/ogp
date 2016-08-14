@@ -17,7 +17,7 @@
 		</tr>
 		<tr>
 			<th>Latest version</th>
-			<td>1.1.1 (2011-09-16)</td>
+			<td>1.1.2 (2011-12-05)</td>
 		</tr>
 		<tr>
 			<th>System requirements</th>
@@ -31,8 +31,8 @@
 	
 	<h2>Abstract</h2>
 	
-	<p>OGP plugin supports <a href="http://ogp.me/">Open Graph Protocol</a>(OGP) and allows you to run your Geeklog site in cooperation with web sites supporting OGP such as <a href="http://developers.facebook.com/docs/opengraph/">Facebook</a>.</p>
-	<p>Besides, the plugin allows you to display Facebook like buttons and/or Facebook comments in your articles and calendar events.</p>
+	<p>OGP plugin supports <a href="http://ogp.me/">Open Graph Protocol</a>(OGP) and allows you to run your Geeklog site in cooperation with web sites supporting OGP such as <a href="http://developers.facebook.com/docs/opengraph/">Facebook</a> by producing &lt;meta property="og:***" content="***"&gt; tags.</p>
+	<p>Besides, the plugin allows you to display Facebook Like buttons and/or Facebook comments in your articles, static pages, calendar events, link categories, poll items and download files.  You can set the kinds of contents in which to show Facebook Like button and/or Facebook comments in Configuration.</p>
 	
 	<h2>Before installation</h2>
 	
@@ -86,7 +86,7 @@
 		<li>Log in to your Geeklog as a root user, go to the plugin editor and install OGP plugin.</li>
 		<li><strong>IMPORTANT</strong>: Go to Configuration Panel and set either your Facebook User ID(s) or your Facebook Applicatin ID.  If you are not going to use Facebook Like button or Fcebook comments, then you don't have to set the latter.  After setting the two items, you have Like button and Facebook comments available as autotags (<strong>[ogp:like]</strong> and <strong>[ogp:comments]</strong> respectively).</li>
 		<li>If you want to show Like button or Facebook comments without embedding the above autotags into articles, then you have to add template variables to templates.  In featuredstorytext.thtml and storytext.thtml, you have to add <strong>{ogp_like}</strong> (for like button) and <strong>{ogp_comments}</strong> (for Facebook comments).</li>
-		<li>If you want to show Like button or Facebook comments with the calendar plugin, you have to take the two following steps:<br>
+		<li>If you want to show Like button or Facebook comments with the calendar plugin(v1.1.2), you have to take the two following steps:<br>
 			<ol>
 				<li>At the bottom of <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/calendar/templates/eventdetails.thtml, add <strong>{ogp_like}</strong> and/or <strong>{ogp_comments}</strong> template variables.</li>
 				<li>Find the next code in <span class="public">&lt;public_html&gt;</span>/calendar/event.php at line number 504<br>
@@ -111,6 +111,68 @@ $cal_templates-&gt;set_var ('lang_addevent', $LANG_CAL_1[6]);<br>
 </code></li>
 			</ol>
 		</li>
+		<li>If you want to show Like button or Facebook comments with the Links plugin(v2.1.1), you have to take the two following steps:<br>
+			<ol>
+				<li>At the bottom of <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/links/templates/links.thtml, add <strong>{ogp_like}</strong> and/or <strong>{ogp_comments}</strong> template variables before {page_navigation} template variable.</li>
+				<li>Find the next code in <span class="public">&lt;public_html&gt;</span>/links/index.php at line number 340<br>
+<code>
+	$linklist-&gt;parse ('output', 'linklist');<br>
+	$display .= $linklist-&gt;finish ($linklist-&gt;get_var ('output'));<br>
+</code><p>and change the above code into this:</p>
+<code>
+	$linklist-&gt;parse ('output', 'linklist');<br>
+	$display .= $linklist-&gt;finish ($linklist-&gt;get_var ('output'));<br>
+	<strong>$linklist-&gt;set_var ('ogp_like', OGP_like());</strong><br>
+	<strong>$linklist-&gt;set_var ('ogp_comments', OGP_comments());</strong><br>
+</code></li>
+			</ol>
+		</li>
+		<li>If you want to show Like button or Facebook comments with the Polls plugin(v2.1.3), you have to take the four following steps:<br>
+			<ol>
+				<li>At the bottom of <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/polls/templates/pollblock.thtml, add <strong>{ogp_like}</strong> and/or <strong>{ogp_comments}</strong> template variables after {poll_comments} template variable.</li>
+				<li>At the bottom of <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/polls/templates/pollresult.thtml, add <strong>{ogp_like}</strong> and/or <strong>{ogp_comments}</strong> template variables after {poll_comments} template variable.</li>
+				<li>Find the next code in <span class="geeklog">&lt;geeklog_dir&gt;</span>/polls/functions.inc at line number 596<br>
+<code>
+$retval =  $poll-&gt;finish($poll-&gt;parse('output', 'block')) . LB;<br>
+</code><p>and change the above code into this:</p>
+<code>
+	<strong>$poll-&gt;set_var ('ogp_like', OGP_like());</strong><br>
+	<strong>$poll-&gt;set_var ('ogp_comments', OGP_comments());</strong><br>
+	$retval = $poll-&gt;finish($poll-&gt;parse('output', 'block')) . LB;<br>
+</code></li>
+				<li>Find the next code in <span class="geeklog">&lt;geeklog_dir&gt;</span>/polls/functions.inc at line number 908<br>
+<code>
+$retval = $poll-&gt;finish($poll-&gt;parse('output', 'block')) . LB;<br>
+</code><p>and change the above code into this:</p>
+<code>
+	<strong>$poll-&gt;set_var ('ogp_like', OGP_like());</strong><br>
+	<strong>$poll-&gt;set_var ('ogp_comments', OGP_comments());</strong><br>
+	$poll-&gt;set_var('lang_polltopics', $LANG_POLLS['polltopics'] );
+</code></li>
+			</ol>
+		</li>
+		<li>If you want to show Like button or Facebook comments with the Filemgmt(v1.6.0) plugin, you have to take the following step:<br>
+			<ol>
+				<li>Find the next code in <span class="public">&lt;public_html&gt;</span>/filemgmt/index.php at line number 277<br>
+<code>
+    $display .= COM_siteFooter();<br>
+</code><p>and change the above code into this:</p>
+<code>
+	<strong>$display .= OGP_like() . "\n" . OGP_comments();</strong><br>
+    $display .= COM_siteFooter();<br>
+</code></li>
+			</ol></li>
+		<li>If you want to show Like button or Facebook comments with the Downloads plugin(v1.0.4), you have to take the following step:<br>
+			<ol>
+				<li>Find the next code in <span class="public">&lt;public_html&gt;</span>/downloads/index.php at line number 526<br>
+<code>
+        $display .= COM_siteFooter();<br>
+</code><p>and change the above code into this:</p>
+<code>
+		<strong>$display .= OGP_like() . "\n" . OGP_comments();</strong><br>
+        $display .= COM_siteFooter();<br>
+</code></li>
+			</ol></li>
 		<li>To configure like buttons and/or Facebook comments, go to Configuration &gt; OGP.</li>
 	</ol>
 
@@ -130,10 +192,18 @@ $cal_templates-&gt;set_var ('lang_addevent', $LANG_CAL_1[6]);<br>
 			<th>Detail</th>
 		</tr>
 		<tr>
+			<td>1.1.2</td>
+			<td>2011-12-05</td>
+			<td>
+				<span class="new">&nbsp;New! </span>&nbsp; Supported the Links , Polls, Filemgmt and Downloads plugins.<br>
+				<span class="new">&nbsp;New! </span>&nbsp; You can now set the kinds of contents in which to show Facebook Like button and/or Facebook comments in Configuration.
+			</td>
+		</tr>
+		<tr>
 			<td>1.1.1</td>
 			<td>2011-09-16</td>
 			<td>
-				<span class="new">&nbsp;New! </span>&nbsp; Supported Calendar plugin.
+				<span class="new">&nbsp;New! </span>&nbsp; Supported the Calendar plugin.
 			</td>
 		</tr>
 		<tr>

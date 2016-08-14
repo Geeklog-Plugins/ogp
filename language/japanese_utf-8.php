@@ -55,6 +55,9 @@ $LANG_confignames['ogp'] = array(
 	'comments_num_posts'	=> 'コメントの表示数',
 	'comments_width'		=> '幅（ピクセル）',
 	'comments_color'		=> '配色',
+	
+	// Since v1.1.2
+	'types'					=> '種類',
 );
 
 $LANG_configsubgroups['ogp'] = array(
@@ -65,6 +68,7 @@ $LANG_fs['ogp'] = array(
     'fs_main'       		=> $LANG_OGP['plugin'] . 'の主要設定',
 	'fs_like'				=> 'Facebookいいね!ボタンの設定',
 	'fs_comments'			=> 'Facebookコメントの設定',
+	'fs_kinds'				=> 'コンテンツの種類',
 );
 
 // Note: entries 0, 1, 9, and 12 are the same as in $LANG_configselects['Core']

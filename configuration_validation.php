@@ -30,7 +30,15 @@ if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== FALSE) {
 	die('This file can not be used on its own!');
 }
 
+require_once dirname(__FILE__) . '/install_defaults.php';
+
 // Open Graph Protocol Plugin Main Settings
-$_CONF_VALIDATE['ogp']['fb_user_ids']        = array('rule' => 'stringOrEmpty');
-$_CONF_VALIDATE['ogp']['fb_app_id']          = array('rule' => 'stringOrEmpty');
+$_CONF_VALIDATE['ogp']['fb_user_ids']        = array('rule' => 'decimal');
+$_CONF_VALIDATE['ogp']['fb_app_id']          = array('rule' => 'decimal');
 $_CONF_VALIDATE['ogp']['fb_default_img_url'] = array('rule' => 'stringOrEmpty');
+$_CONF_VALIDATE['ogp']['like_width']         = array('rule' => 'decimal');
+$_CONF_VALIDATE['ogp']['comments_num_posts'] = array('rule' => 'decimal');
+$_CONF_VALIDATE['ogp']['comments_width']     = array('rule' => 'decimal');
+$_CONF_VALIDATE['ogp']['types']              = array(
+	'rule' => array('inList', $_OGP_DEFAULT['types'])
+);

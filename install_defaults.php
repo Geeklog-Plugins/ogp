@@ -42,7 +42,7 @@ global $_OGP_DEFAULT;
 
 $_OGP_DEFAULT = array();
 
-// Facebook Like button
+// Facebook "Like" button
 $_OGP_DEFAULT['like_send'] = TRUE;
 
 $_OGP_DEFAULT['like_show_faces'] = TRUE;
@@ -57,12 +57,18 @@ $_OGP_DEFAULT['like_color'] = 'light';
 
 $_OGP_DEFAULT['like_font'] = '';
 
-// Facebook Comments
+// Facebook "Comments"
 $_OGP_DEFAULT['comments_num_posts'] = 10;
 
 $_OGP_DEFAULT['comments_width'] = 500;
 
 $_OGP_DEFAULT['comments_color'] = 'light';
+
+// Types of contents
+$_OGP_DEFAULT['types'] = array(
+	'article', 'staticpages', 'calendar', 'calendarjp', 'links', 'polls',
+	'filemgmt', 'downloads',
+);
 
 /**
 * Initializes Open Graph Protocol plugin configuration
@@ -96,7 +102,7 @@ function plugin_initconfig_ogp() {
         $c->add('fb_app_id', '', 'text', 0, 0, NULL, 20, TRUE, $me);
         $c->add('fb_default_img_url', $default_img_url, 'text', 0, 0, NULL, 30, TRUE, $me);
 		
-		// Facebook Like
+		// Facebook "Like" button
         $c->add('like_send', $_OGP_DEFAULT['like_send'], 'select', 0, 1, 1, 40, TRUE, $me);
         $c->add('like_show_faces', $_OGP_DEFAULT['like_show_faces'], 'select', 0, 1, 1, 50, TRUE, $me);
         $c->add('like_style_layout', $_OGP_DEFAULT['like_style_layout'], 'select', 0, 1, 2, 60, TRUE, $me);
@@ -104,10 +110,14 @@ function plugin_initconfig_ogp() {
         $c->add('like_verb', $_OGP_DEFAULT['like_verb'], 'select', 0, 1, 3, 80, TRUE, $me);
         $c->add('like_color', $_OGP_DEFAULT['like_color'], 'select', 0, 1, 4, 90, TRUE, $me);
         $c->add('like_font', $_OGP_DEFAULT['like_font'], 'select', 0, 1, 5, 100, TRUE, $me);
-		// Facebook comments
+		// Facebook "Comments" form
         $c->add('comments_num_posts', $_OGP_DEFAULT['comments_num_posts'], 'text', 0, 2, NULL, 110, TRUE, $me);
         $c->add('comments_width', $_OGP_DEFAULT['comments_width'], 'text', 0, 2, NULL, 120, TRUE, $me);
         $c->add('comments_color', $_OGP_DEFAULT['comments_color'], 'select', 0, 2, 4, 130, TRUE, $me);
+		
+		// Since v1.1.2
+        $c->add('fs_kinds', NULL, 'fieldset', 0, 3, NULL, 0, TRUE, $me);
+        $c->add('types', $_OGP_DEFAULT['types'], '%text', 0, 3, NULL, 140, TRUE, $me);
     }
 	
     return TRUE;
