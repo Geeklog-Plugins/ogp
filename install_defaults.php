@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/install_defaults.php                                  |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011 mystral-kk - geeklog AT mystral-kk DOT net             |
+// | Copyright (C) 2011-2012 mystral-kk - geeklog AT mystral-kk DOT net        |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -40,34 +40,27 @@ if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== FALSE) {
 */
 global $_OGP_DEFAULT;
 
-$_OGP_DEFAULT = array();
-
-// Facebook "Like" button
-$_OGP_DEFAULT['like_send'] = TRUE;
-
-$_OGP_DEFAULT['like_show_faces'] = TRUE;
-
-$_OGP_DEFAULT['like_style_layout'] = 'standard';
-
-$_OGP_DEFAULT['like_width'] = 450;
-
-$_OGP_DEFAULT['like_verb'] = 'like';
-
-$_OGP_DEFAULT['like_color'] = 'light';
-
-$_OGP_DEFAULT['like_font'] = '';
-
-// Facebook "Comments"
-$_OGP_DEFAULT['comments_num_posts'] = 10;
-
-$_OGP_DEFAULT['comments_width'] = 500;
-
-$_OGP_DEFAULT['comments_color'] = 'light';
-
-// Types of contents
-$_OGP_DEFAULT['types'] = array(
-	'article', 'staticpages', 'calendar', 'calendarjp', 'links', 'polls',
-	'filemgmt', 'downloads',
+$_OGP_DEFAULT = array(
+	// Facebook "Like" button
+	'like_send'				=> TRUE,
+	'like_show_faces'		=> TRUE,
+	'like_style_layout'		=> 'standard',
+	'like_width'			=> 450,
+	'like_verb'				=> 'like',
+	'like_color'			=> 'light',
+	'like_font'				=> '',
+	
+	// Facebook "Comments"
+	'comments_num_posts'	=> 10,
+	'comments_width'		=> 500,
+	'comments_color'		=> 'light',
+	
+	// Types of contents
+	'types'					=> array(
+									'article', 'staticpages', 'calendar',
+									'calendarjp', 'links', 'polls', 'filemgmt',
+									'downloads',
+	),
 );
 
 /**

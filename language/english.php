@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/language/english.php                                  |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011 mystral-kk - geeklog AT mystral-kk DOT net             |
+// | Copyright (C) 2011-2012 mystral-kk - geeklog AT mystral-kk DOT net        |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------|

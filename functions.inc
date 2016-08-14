@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/functions.inc                                         |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011 mystral-kk - geeklog AT mystral-kk DOT net             |
+// | Copyright (C) 2011-2012 mystral-kk - geeklog AT mystral-kk DOT net        |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -30,9 +30,7 @@ if (stripos($_SERVER['PHP_SELF'], 'functions.inc') !== FALSE) {
 	die('This file can not be used on its own.');
 }
 
-/**
-* Language file Include
-*/
+// Language file Include
 $langfile = $_CONF['path'] . 'plugins/ogp/language/' . $_CONF['language'] . '.php';
 clearstatcache();
 
@@ -91,8 +89,8 @@ function OGP_replaceTags($content) {
 		$length   = MBYTE_strlen($tagstr);
 		$function = 'plugin_autotags_' . $module;
 
-		if (array_key_exists($tag, $autolinkModules)
-		 AND function_exists($function)) {
+		if (array_key_exists($tag, $autolinkModules) AND
+			function_exists($function)) {
 			$params = explode(' ', $match[2]);
 
 			if (is_array($params) AND (count($params) > 0)) {
@@ -139,7 +137,7 @@ function OGP_replaceTags($content) {
 }
 
 /**
-* Render the actual content of a static page (without any surrounding blocks)
+* Renders the actual content of a static page (without any surrounding blocks)
 *
 * @param    string  $sp_content the content (HTML or PHP source)
 * @param    int     $sp_php     flag: 1 = content is PHP source, 0 = is HTML
@@ -156,7 +154,7 @@ function OGP_SP_render_content($sp_content, $sp_php, $query = '') {
 		// Check for type (ie html or php)
 		if ($sp_php == 1) {
 			$retval = eval($sp_content);
-		} elseif ($sp_php == 2) {
+		} else if ($sp_php == 2) {
 			ob_start();
 			eval($sp_content);
 			$retval = ob_get_contents();
@@ -164,7 +162,9 @@ function OGP_SP_render_content($sp_content, $sp_php, $query = '') {
 		} else {
 			$retval = $sp_content;
 		}
+		
 		$retval = OGP_replaceTags($retval);
+		
 		if (! empty($query)) {
 			$retval = COM_highlightQuery($retval, $query);
 		}
@@ -174,6 +174,7 @@ function OGP_SP_render_content($sp_content, $sp_php, $query = '') {
 			$retval .= $LANG_STATIC['deny_msg'];
 		} else {
 			$retval .= OGP_replaceTags($sp_content);
+			
 			if (! empty($query)) {
 				$retval = COM_highlightQuery($retval, $query);
 			}
@@ -215,8 +216,8 @@ function plugin_getheadercode_ogp() {
 		COM_errorLog(OGP_str('fb_ids_not_set'));
 	}
 
-	if ((strcasecmp($url, $_CONF['site_url'] . '/') === 0)
-	 OR (strcasecmp($url, $_CONF['site_url']) === 0)) {
+	if ((strcasecmp($url, $_CONF['site_url'] . '/') === 0) OR
+		(strcasecmp($url, $_CONF['site_url']) === 0)) {
 		// Site HOME
 		$type = 'website';
 	} else if (preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url, $match)) {
@@ -271,8 +272,8 @@ function plugin_getheadercode_ogp() {
 				$desc = $title;
 			}
 		}
-	} else if (in_array('staticpages', $_PLUGINS)
-	 AND preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url, $match)) {
+	} else if (in_array('staticpages', $_PLUGINS) AND
+			   preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url, $match)) {
 		// Staticpages
 		$output  = '';
 		$args    = array(
@@ -297,8 +298,8 @@ function plugin_getheadercode_ogp() {
 				$desc = $content;
 			}
 		}
-	} else if (in_array('calendar', $_PLUGINS)
-	 AND preg_match("@calendar/event\.php\?eid=(.+)$@i", $url, $match)) {
+	} else if (in_array('calendar', $_PLUGINS) AND
+			   preg_match("@calendar/event\.php\?eid=(.+)$@i", $url, $match)) {
 		// Calendar
 		$sql = "SELECT title, description, event_type, location "
 			 . "FROM {$_TABLES['events']} "
@@ -316,8 +317,8 @@ function plugin_getheadercode_ogp() {
 				$image = OGP_fixUri($image);
 			}
 		}
-	} else if (in_array('calendarjp', $_PLUGINS)
-	 AND preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url, $match)) {
+	} else if (in_array('calendarjp', $_PLUGINS) AND
+			   preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url, $match)) {
 		// Calendar
 		$sql = "SELECT title, description, event_type, location "
 			 . "FROM {$_TABLES['eventsjp']} "
@@ -426,7 +427,7 @@ function plugin_cclabel_ogp() {
 	global $_CONF;
 
 	if (SEC_hasRights('ogp.edit')) {
-		$pi_name   = OGP_str('admin');
+		$pi_name = OGP_str('admin');
 
 		if (!OGP_isFbUserIdSet() OR !OGP_isFbAppIdSet()) {
 			$pi_name .= '!';
@@ -449,9 +450,9 @@ function plugin_getadminoption_ogp() {
 	global $_CONF, $_TABLES;
 
 	if (SEC_hasRights('ogp.edit')) {
-		$pi_name   = OGP_str('admin');
+		$pi_name = OGP_str('admin');
 
-		if (!OGP_isFbUserIdSet() AND !OGP_isFbAppIdSet()) {
+		if (!OGP_isFbUserIdSet() OR !OGP_isFbAppIdSet()) {
 			$pi_name .= '!';
 		}
 
@@ -506,8 +507,9 @@ function plugin_upgrade_ogp() {
 			case '1.1.2':
 			case '1.1.3':
 			case '1.1.4':
+			case '1.1.5':
 				// Does nothing
-				$pi_version = '1.1.5';
+				$pi_version = '1.1.6';
 				break;
 			
 			default:
@@ -567,6 +569,7 @@ function OGP_loadConfig() {
 
 	if ($config->group_exists('ogp')) {
 		$temp = $config->get_config('ogp');
+		
 		if (is_array($temp) AND (count($temp) > 0)) {
 			$_OGP_CONF = array_merge($_OGP_CONF, $temp);
 		}
@@ -590,11 +593,11 @@ function plugin_getdocumentationurl_ogp($file) {
 			case 'config':
 				$lang = COM_getLanguageName();
 				$path = 'admin/plugins/ogp/docs/';
-		
+				
 				if (!file_exists($_CONF['path_html'] . $path . $lang . '/ogp.html')) {
 					$lang = 'english';
 				}
-		
+				
 				$doc_url = $_CONF['site_url'] . '/' . $path . $lang . '/ogp.html';
 				break;
 
@@ -669,21 +672,13 @@ function OGP_escValue($str) {
 function OGP_isFbUserIdSet() {
 	global $_CONF, $_OGP_CONF;
 
-	if (preg_match('/^\s*[0-9]+(\s*,\s*[0-9]+)*\s*$/', $_OGP_CONF['fb_user_ids'])) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+	return (preg_match('/^\s*[0-9]+(\s*,\s*[0-9]+)*\s*$/', $_OGP_CONF['fb_user_ids']) == 1);
 }
 
 function OGP_isFbAppIdSet() {
 	global $_CONF, $_OGP_CONF;
 
-	if (preg_match('/^\s*[0-9]+\s*$/', $_OGP_CONF['fb_app_id'])) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+	return (preg_match('/^\s*[0-9]+\s*$/', $_OGP_CONF['fb_app_id']) == 1);
 }
 
 function OGP_fixUri($uri) {
@@ -712,7 +707,6 @@ function OGP_gerArgs($str) {
 	global $_OGP_CONF;
 
 	$retval = array();
-
 	$parts = explode(' ', trim(strtolower($str)));
 
 	if (is_array($parts) AND (count($parts) > 0)) {
@@ -806,14 +800,14 @@ function OGP_isSupportedItem($url) {
 	}
 	
 	// Article
-	if ((in_array('article', $_OGP_CONF['types']) AND preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url)) 
-	 OR (in_array('staticpages', $_PLUGINS) AND in_array('staticpages', $_OGP_CONF['types']) AND preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url))
-	 OR (in_array('calendar', $_PLUGINS) AND in_array('calendar', $_OGP_CONF['types']) AND preg_match("@calendar/event\.php\?eid=(.+)$@i", $url))
-	 OR (in_array('calendarjp', $_PLUGINS) AND in_array('calendarjp', $_OGP_CONF['types']) AND preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url))
-	 OR (in_array('links', $_PLUGINS) AND in_array('links', $_OGP_CONF['types']) AND preg_match("@links/index\.php(?:\?category=(.+))?$@i", $url))
-	 OR (in_array('polls', $_PLUGINS) AND in_array('polls', $_OGP_CONF['types']) AND preg_match("@polls/index\.php(?:\?pid=(.+))?$@i", $url))
-	 OR (in_array('filemgmt', $_PLUGINS) AND in_array('filemgmt', $_OGP_CONF['types']) AND preg_match("@filemgmt/index\.php(?:\?id=|/)\d+$@i", $url))
-	 OR (in_array('downloads', $_PLUGINS) AND in_array('downloads', $_OGP_CONF['types']) AND preg_match("@downloads/index\.php(?:\?id=|/).+$@i", $url))) {
+	if ((in_array('article', $_OGP_CONF['types']) AND preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url)) OR
+		(in_array('staticpages', $_PLUGINS) AND in_array('staticpages', $_OGP_CONF['types']) AND preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url)) OR
+		(in_array('calendar', $_PLUGINS) AND in_array('calendar', $_OGP_CONF['types']) AND preg_match("@calendar/event\.php\?eid=(.+)$@i", $url)) OR
+		(in_array('calendarjp', $_PLUGINS) AND in_array('calendarjp', $_OGP_CONF['types']) AND preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url)) OR
+		(in_array('links', $_PLUGINS) AND in_array('links', $_OGP_CONF['types']) AND preg_match("@links/index\.php(?:\?category=(.+))?$@i", $url)) OR
+		(in_array('polls', $_PLUGINS) AND in_array('polls', $_OGP_CONF['types']) AND preg_match("@polls/index\.php(?:\?pid=(.+))?$@i", $url)) OR
+		(in_array('filemgmt', $_PLUGINS) AND in_array('filemgmt', $_OGP_CONF['types']) AND preg_match("@filemgmt/index\.php(?:\?id=|/)\d+$@i", $url)) OR
+		(in_array('downloads', $_PLUGINS) AND in_array('downloads', $_OGP_CONF['types']) AND preg_match("@downloads/index\.php(?:\?id=|/).+$@i", $url))) {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -833,49 +827,51 @@ function OGP_like($params = array()) {
 	$url    = COM_getCurrentURL();
 	$locale = OGP_getLocale();
 
-	if (OGP_isFbAppIdSet() AND OGP_isSupportedItem($url)) {
-		$send = isset($params['send']) ? $params['send'] : $_OGP_CONF['like_send'];
-		$send = $send ? 'true' : 'false';
-		$show_faces = isset($params['show_faces'])
-					? $params['show_faces']
-					: $_OGP_CONF['like_show_faces'];
-		$show_faces = $show_faces ? 'true' : 'false';
+	if (OGP_isSupportedItem($url)) {
+		if (OGP_isFbAppIdSet()) {
+			$send = isset($params['send']) ? $params['send'] : $_OGP_CONF['like_send'];
+			$send = $send ? 'true' : 'false';
+			$show_faces = isset($params['show_faces'])
+						? $params['show_faces']
+						: $_OGP_CONF['like_show_faces'];
+			$show_faces = $show_faces ? 'true' : 'false';
 
-		$style_layout = isset($params['style_layout'])
-					  ? $params['style_layout']
-					  : $_OGP_CONF['like_style_layout'];
+			$style_layout = isset($params['style_layout'])
+						  ? $params['style_layout']
+						  : $_OGP_CONF['like_style_layout'];
 
-		$width = isset($params['width'])
-			   ? $params['width'] : (int) $_OGP_CONF['like_width'];
+			$width = isset($params['width'])
+				   ? $params['width'] : (int) $_OGP_CONF['like_width'];
 
-		if (($style_layout === 'standard') AND ($width < 225)) {
-			$width = 225;
-		} else if (($style_layout === 'button_count') AND ($width < 90)) {
-			$width = 90;
-		} else if (($style_layout === 'box_count') AND ($width < 55)) {
-			$width = 55;
-		}
+			if (($style_layout === 'standard') AND ($width < 225)) {
+				$width = 225;
+			} else if (($style_layout === 'button_count') AND ($width < 90)) {
+				$width = 90;
+			} else if (($style_layout === 'box_count') AND ($width < 55)) {
+				$width = 55;
+			}
 		
-		$appId = trim($_OGP_CONF['fb_app_id']);
-		$verb  = isset($params['verb'])
-			   ? $params['verb']
-			   : $_OGP_CONF['like_verb'];
-		$color = isset($params['color'])
-			   ? $params['color']
-			   : $_OGP_CONF['like_color'];
-		$font  = isset($params['font'])
-			   ? $params['font']
-			   : $_OGP_CONF['like_font'];
+			$appId = trim($_OGP_CONF['fb_app_id']);
+			$verb  = isset($params['verb'])
+				   ? $params['verb']
+				   : $_OGP_CONF['like_verb'];
+			$color = isset($params['color'])
+				   ? $params['color']
+				   : $_OGP_CONF['like_color'];
+			$font  = isset($params['font'])
+				   ? $params['font']
+				   : $_OGP_CONF['like_font'];
 
-		if (!empty($font)) {
-			$font = ' data-font="' . $font . '"';
-		}
+			if (!empty($font)) {
+				$font = ' data-font="' . $font . '"';
+			}
 
-		$retval = <<<EOD
+			$retval = <<<EOD
 <div class="fb-like" data-href="{$url}" data-send="{$send}" data-width="{$width}" data-show-faces="{$show_faces}" data-layout="{$style_layout}" data-action="{$verb}" data-colorscheme="{$color}"{$font}></div>
 EOD;
-	} else {
-		COM_errorLog(OGP_str('fb_appid_not_set'));
+		} else {
+			COM_errorLog(OGP_str('fb_appid_not_set'));
+		}
 	}
 	
 	return $retval;
@@ -894,31 +890,34 @@ function OGP_comments($params = array()) {
 	$url    = COM_getCurrentURL();
 	$locale = OGP_getLocale();
 
-	if (OGP_isFbAppIdSet() AND OGP_isSupportedItem($url)) {
-		$num_posts = isset($params['num_posts'])
-				   ? $params['num_posts']
-				   : (int) $_OGP_CONF['comments_num_posts'];
+	if (OGP_isSupportedItem($url)) {
+		if (OGP_isFbAppIdSet()) {
+			$num_posts = isset($params['num_posts'])
+					   ? $params['num_posts']
+					   : (int) $_OGP_CONF['comments_num_posts'];
 
-		if ($num_posts < 1) {
-			$num_posts = 2;
-		}
+			if ($num_posts < 1) {
+				$num_posts = 2;
+			}
 
-		$width = isset($params['width'])
-			   ? $params['width'] : (int) $_OGP_CONF['comments_width'];
+			$width = isset($params['width'])
+				   ? $params['width']
+				   : (int) $_OGP_CONF['comments_width'];
 
-		if ($width < 400) {
-			$width = 400;
-		}
+			if ($width < 400) {
+				$width = 400;
+			}
 
-		$color = isset($params['color'])
-			   ? $params['color']
-			   : $_OGP_CONF['comments_color'];
+			$color = isset($params['color'])
+				   ? $params['color']
+				   : $_OGP_CONF['comments_color'];
 
-		$retval = <<<EOD
+			$retval = <<<EOD
 <div class="fb-comments" data-href="{$url}" data-num-posts="{$num_posts}" data-width="{$width}" data-colorscheme="{$color}"></div>
 EOD;
-	} else {
-		COM_errorLog(OGP_str('fb_appid_not_set'));
+		} else {
+			COM_errorLog(OGP_str('fb_appid_not_set'));
+		}
 	}
 	
 	return $retval;
