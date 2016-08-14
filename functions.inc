@@ -157,15 +157,18 @@ function plugin_getheadercode_ogp() {
 	} else if (in_array('staticpages', $_PLUGINS)
 	 AND preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url, $match)) {
 		// Staticpages
-		require_once $_CONF['path'] . 'plugins/staticpages/services.inc.php';
-		
-		$args = array(
-			'sp_id' => $match[1], 
+		$output  = '';
+		$args    = array(
+					'sp_id' => $match[1],
+					'mode'  => 'autotag',
 		);
+		$svc_msg = array();
 		
-		if (service_get_staticpages($args, $output, $svc_msg) == PLG_RET_OK) {
+		if (PLG_invokeService('staticpages', 'get', $args, $output, $svc_msg) == PLG_RET_OK) {
+			$content = SP_render_content(
+				stripslashes($output['sp_content']), $output['sp_php']
+			);
 			$title   = $output['sp_title'];
-			$content = $output['sp_content'];
 			$desc    = $output['meta_description'];
 			$type    = 'article';
 			
@@ -177,7 +180,7 @@ function plugin_getheadercode_ogp() {
 			if (empty($desc)) {
 				$desc = $content;
 			}
-		}
+        }
 	}
 	
 	if (!empty($type) AND !empty($title) AND !empty($image)) {
@@ -200,9 +203,7 @@ function plugin_getheadercode_ogp() {
 	}
 	
 	if (!empty($desc)) {
-		$desc = OGP_escValue($desc);
-		$desc = str_replace(array("\n", "\r"), ' ', $desc);
-		$desc = preg_replace('/\s\s+/ms', ' ', $desc);
+		$desc    = OGP_escValue($desc);
 		$retval .= '<meta property="og:description" content="' . $desc . '"'
 				.  XHTML . '>' . LB;
 	}
@@ -409,7 +410,11 @@ function OGP_str($index, $noesc = FALSE) {
 }
 
 function OGP_escValue($str) {
-	return OGP_esc(strip_tags($str));
+	$str = OGP_esc(strip_tags($str));
+	$str = str_replace(array("\n", "\r"), ' ', $str);
+	$str = preg_replace('/\s\s+/ms', ' ', $str);
+	
+	return $str;
 }
 
 function OGP_lookupProfileId($user_name) {
