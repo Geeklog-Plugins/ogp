@@ -1,60 +1,117 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta http-equiv="Content-Style-Type" content="text/css">
-	<title>Install/Uninstall instruction for the Geeklog Open Graph Protocol plugin</title>
-	<style type="text/css">
-	<!-->
-		body {
-			color: black;
-			background-color: white;
-			line-height: 1.5em;
-		}
-		.geeklog {
-			background-color: yellow;
-		}
-		.public {
-			background-color: #99ff00;
-		}
-		.admin {
-			background-color: aqua;
-		}
-	<! -->
-	</style>
+	<link rel="stylesheet" type="text/css" href="../docstyle.css">
+	<title>Geeklog Open Graph Protocol plugin</title>
 </head>
 
 <body>
-	<h1>Install/Uninstall instruction for the Geeklog OGP(Open Graph Protocol) plugin</h1>
+	<h1>Geeklog OGP(Open Graph Protocol) plugin</h1>
 
-	<p>In the following descriptions</p>
+	<table style="width: 40em;">
+		<tr>
+			<th style="width: 7em;">Author</th>
+			<td>mystral-kk &lt;geeklog AT mystral-kk DOT net&gt;</td>
+		</tr>
+		<tr>
+			<th>Latest version</th>
+			<td>1.1.0 (2011-09-11)</td>
+		</tr>
+		<tr>
+			<th>System requirements</th>
+			<td>Geeklog-1.6.0 or newer, PHP-5.0.0 or newer</td>
+		</tr>
+		<tr>
+			<th>License</th>
+			<td>GPLv2 or later</td>
+		</tr>
+	</table>
+	
+	<h2>Abstract</h2>
+	
+	<p>OGP plugin supports <a href="http://ogp.me/">Open Graph Protocol</a>(OGP) and allows you to run your Geeklog site in cooperation with web sites supporting OGP such as <a href="http://developers.facebook.com/docs/opengraph/">Facebook</a>.</p>
+	
+	<h2>Before installation</h2>
+	
 	<ul>
-		<li><span class="geeklog">&lt;geeklog_dir&gt;</span> is the directory where the system config.php file resides</li>
+		<li>Confirm your Facebook user ID.  In case you don't know your ID, <a href="http://apps.facebook.com/what-is-my-user-id/">This application</a> is handy.</li>
+		<li>If you want to use Facebook Like button or Facebook comments, you have to aquire an application ID at <a href="https://developers.facebook.com/apps">Facebook Developers</a>.  Click on <strong>+ Create New App</strong>.  In the dialog, enter some string (which DOES NOT include "Facebook") as "App Name", select your locale, check "Facebook terms of use" and click on "continue".  In the following you have to get security check.  Enter two words in the CAPTCHA dialog.  If words are hard to discern, then keep clicking "display other words" till you get ones you can recognize.  In the following screen, write down your <strong>App ID</strong>.</li>
+	</ul>
+	
+	<p>In the following descriptions,</p>
+	
+	<ul>
+		<li><span class="geeklog">&lt;geeklog_dir&gt;</span> is the directory where the system db-config.php file resides</li>
+		<li><span class="public">&lt;public_html&gt;</span> is the directory where lib-common.php file resides</li>
 		<li><span class="admin">&lt;admin&gt;</span> is the directory where the administration files reside (usually, under <span class="public">&lt;public_html&gt;</span>)</li>
 	</ul>
 
-	<h2>INSTALL:</h2>
+	<h2>Install</h2>
 
 	<ol>
 		<li>Uncompress the ogp plugin archive while in the <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins directory.  The archive will create a directory called ogp in the plugins directory.</li>
-		<li>Create the admin directory.  Under your <span class="admin">&lt;admin&gt;</span>/plugins/ directory create a directory called ogp.</li>
-		<li>Change to your <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/ directory.  Copy the files in the admin directory to the <span class="admin">&lt;admin&gt;</span>/plugins/ogp/ directory your created in step 2.</li>
+		<li>Under your <span class="public">&lt;public_html&gt;</span> directory, create a directory called ogp.</li>
+		<li>Under your <span class="admin">&lt;admin&gt;</span>/plugins/ directory, create a directory called ogp.</li>
+		<li>Change to your <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/public_html directory and copy the files in the directory to the <span class="public">&lt;public_html&gt;</span>/ogp directory your created in step 2.</li>
+		<li>Change to your <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/admin directory and copy the files in the directory to the <span class="admin">&lt;admin&gt;</span>/plugins/ogp directory your created in step 3.</li>
 		<li>Change <span class="public">&lt;public_html&gt;</span>/layout/your_theme/header.thtml.<br>
 		(before) <code>&lt;html{html_attribute}{xmlns}&gt;</code><br>
-		(after) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
+		(after) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
 		</li>
-		<li>Log in to your Geeklog as a root user and click on "Plugins", then hit "intall" button.  The OGP plugin should now be installed and functioning.</li>
-		<li><strong>IMPORTANT</strong>: Go to Configuration Panel and set either your Facebook User ID(s) or your Facebook Applicatin ID.  If you don't know your Facebook User ID, then <a href="http://apps.facebook.com/what-is-my-user-id/">This App</a> is quite handy.</li>
+		<li>If you are using Geeklog prior to version 1.8.0, add the followingcode to your footer.thtml, just before the &lt;/body&gt; tag.<br>
+		<code>
+		&lt;div id="fb-root"&gt;&lt;/div&gt;
+&lt;script&gt;
+  window.fbAsyncInit = function() {
+	FB.init({appId: '<strong>Your Facebook App ID</strong>', status: true, cookie: true,
+			 xfbml: true, channelURL: '<strong>Your Site URL</strong>/admin/plugins/ogp/channel.php'});
+  };
+  (function() {
+	var e = document.createElement('script'); e.async = true;
+	e.src = document.location.protocol +
+	  '//connect.facebook.net/<strong>en_US</strong>/all.js';
+	document.getElementById('fb-root').appendChild(e);
+  }());
+&lt;/script&gt;
+		</code>
+		<p>Replace <strong>Your Facebook App ID</strong> and <strong>Your Site URL</strong> with suitable values.  If you want to use this plugin other than English, then change <strong>en_US</strong> into the locale you want.  For available options, refer to <a href="http://www.facebook.com/translations/FacebookLocales.xml">this XML file</a>.  When you are using Geeklog-1.8.0 or later, this step is unnecessary.</p></li>
+		<li>Log in to your Geeklog as a root user, go to the plugin editor and install OGP plugin.</li>
+		<li><strong>IMPORTANT</strong>: Go to Configuration Panel and set either your Facebook User ID(s) or your Facebook Applicatin ID.  If you are not going to use Facebook Like button or Fcebook comments, then you don't have to set the latter.  After setting the two items, you have Like button and Facebook comments available as autotags (<strong>[ogp:like]</strong> and <strong>[ogp:comments]</strong> respectively).</li>
+		<li>If you want to show Like button or Facebook comments without embedding the above autotags into articles, then you have to add template variables to templates.  In featuredstorytext.thtml and storytext.thtml, you have to add <strong>{ogp_like}</strong> (for like button) and <strong>{ogp_comments}</strong> (for Facebook comments).</li>
+		<li>To configure like buttons and/or Facebook comments, go to Configuration &gt; OGP.</li>
 	</ol>
 
-	<h2>UNINSTALL:</h2>
+	<h2>Uninstall</h2>
 
 	<ol>
-		<li>Log in to your Geeklog as a root user and click on "Plugins", then hit "unintall" button.</li>
-		<li>Delete the two plugin directories created in the install process:  <span class="geeklog">&lt;geeklog-dir&gt;</span>/plugins/ogp/ and /ogp/ and <span class="admin">&lt;admin&gt;</span>/plugins/ogp/</li>
+		<li>Log in to your Geeklog as a root user and uninstall the OGP plugin from plugin editor.</li>
+		<li>Delete the three plugin directories created in the install process: <span class="geeklog">&lt;geeklog-dir&gt;</span>/plugins/ogp, <span class="public">&lt;public_html&gt;</span>/ogp and <span class="admin">&lt;admin&gt;</span>/plugins/ogp.</li>
 	</ol>
 
-	<p>That's it.</p>
-
+	<h2>History</h2>
+	
+	<table>
+		<tr>
+			<th>Version</th>
+			<th>Date(YYYY-MM-DD)</th>
+			<th>Detail</th>
+		</tr>
+		<tr>
+			<td>1.1.0</td>
+			<td>2011-09-11</td>
+			<td>
+				<span class="new">&nbsp;New! </span>&nbsp; Supported like button and Facebook comments.
+			</td>
+		</tr>
+		<tr>
+			<td>1.0.0</td>
+			<td>2011-09-04</td>
+			<td>
+				<span class="new">&nbsp;New! </span>&nbsp; First public release
+			</td>
+		</tr>
+	</table>
 </body>
 </html>

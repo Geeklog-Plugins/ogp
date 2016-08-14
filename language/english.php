@@ -35,10 +35,6 @@ $LANG_OGP = array(
 	'fb_ids_not_set'	=> 'OGP: Error!  You have to set either your Facebook User ID(s) or your Facebook App ID first at the configuration panel!',
 );
 
-
-
-
-
 // Localization of the Admin Configuration UI
 $LANG_configsections['ogp'] = array(
     'label' => 'OGP',
@@ -46,8 +42,19 @@ $LANG_configsections['ogp'] = array(
 );
 
 $LANG_confignames['ogp'] = array(
-	'fb_user_ids'	=> 'Your Facebook User ID(s)',
-	'fb_app_id'		=> 'Your Facebook Application ID',
+	'fb_user_ids'			=> 'Your Facebook User ID(s)',
+	'fb_app_id'				=> 'Your Facebook Application ID',
+	'fb_default_img_url'	=> 'Your site\'s default image',
+	'like_send'				=> 'Show "send" button',
+	'like_show_faces'		=> 'Show faces',
+	'like_style_layout'		=> 'Style layout',
+	'like_width'			=> 'Width (pixels)',
+	'like_verb'				=> 'Action',
+	'like_color'			=> 'Color Scheme',
+	'like_font'				=> 'Font',
+	'comments_num_posts'	=> 'Number of posts',
+	'comments_width'		=> 'Width (pixels)',
+	'comments_color'		=> 'Color Scheme',
 );
 
 $LANG_configsubgroups['ogp'] = array(
@@ -55,11 +62,23 @@ $LANG_configsubgroups['ogp'] = array(
 );
 
 $LANG_fs['ogp'] = array(
-    'fs_main'        => 'OGP Main Settings',
+    'fs_main'        		=> 'OGP Main Settings',
+	'fs_like'				=> 'Facebook Like button',
+	'fs_comments'			=> 'Facebook Comments',
 );
 
 // Note: entries 0, 1, 9, and 12 are the same as in $LANG_configselects['Core']
 $LANG_configselects['ogp'] = array(
-    0 => array('True' => 1, 'False' => 0),
-    1 => array('True' => TRUE, 'False' => FALSE),
+    0 => array('Yes' => 1, 'No' => 0),
+    1 => array('Yes' => TRUE, 'No' => FALSE),
+	2 => array(
+			'Standard' => 'standard', 'Button' => 'button_count',
+			'Box' => 'box_count'
+		),
+	3 => array('Like' => 'like', 'Recommend' => 'recommend'),
+	4 => array('Light' => 'light', 'Dark' => 'dark'),
+	5 => array('Default' => '', 'arial' => 'arial', 'lucida grande' => 'lucida grande',
+			'segoe ui' => 'segoe ui', 'tahoma' => 'tahoma',
+			'trebuchet ms' => 'trebuchet ms', 'verdana' => 'verdana',
+		),
 );

@@ -3,38 +3,48 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta http-equiv="Content-Style-Type" content="text/css">
-	<title>Geeklog OGP(Open Graph Protocol)プラグインのインストール/アンインストール</title>
-	<style type="text/css">
-	<!-->
-		body {
-			color: black;
-			background-color: white;
-			line-height: 1.5em;
-		}
-		.geeklog {
-			background-color: yellow;
-		}
-		.public {
-			background-color: #99ff00;
-		}
-		.admin {
-			background-color: aqua;
-		}
-		li {
-			padding: 5px 5px 10px 5px;
-		}
-	<! -->
-	</style>
+	<link rel="stylesheet" type="text/css" href="../docstyle.css">
+	<title>Geeklog OGP(Open Graph Protocol)プラグイン</title>
 </head>
 
 <body>
-	<h1>Geeklog Open Graph Protocol プラグインのインストール/アンインストール</h1>
-
-	<h2>インストール:</h2>
+	<h1>Geeklog OGP(Open Graph Protocol)プラグイン</h1>
+	
+	<table style="width: 40em;">
+		<tr>
+			<th style="width: 7em;">作者</th>
+			<td>mystral-kk &lt;geeklog AT mystral-kk DOT net&gt;</td>
+		</tr>
+		<tr>
+			<th>最新バージョン</th>
+			<td>1.1.0 (2011-09-11)</td>
+		</tr>
+		<tr>
+			<th>システム要件</th>
+			<td>Geeklog-1.6.0以降、PHP-5.0.0以降</td>
+		</tr>
+		<tr>
+			<th>ライセンス</th>
+			<td>GPLv2以降</td>
+		</tr>
+	</table>
+	
+	<h2>概要</h2>
+	
+	<p>OGPプラグインは<a href="http://ogp.me/">Open Graph Protocol</a>（以下、OGP）をサポートしており、Geeklogサイトと<a href="http://developers.facebook.com/docs/opengraph/">Facebook</a>などのOGPをサポートするサイトとの連携を可能にします。</p>
+	
+	<h2>インストール前の準備</h2>
+	
+	<ul>
+		<li>FacebookのユーザーIDを確認しておきます。ユーザーIDがわからない場合は、<a href="http://apps.facebook.com/what-is-my-user-id/">このアプリケーション</a>が便利です。</li>
+		<li>「いいね!」ボタンやコメント機能を使用する場合は、FacebookのアプリケーションIDを取得する必要があります。取得するには、<a href="https://developers.facebook.com/apps">ここをクリック</a>してから、<strong>+ Create New App</strong>をクリックします。「App Name」は"Facebook"を<strong>含まない</strong>適当な文字列を入力、「Locale」は日本語を選択、「I agree to the Facebook利用規約」にチェックを入れてから「続行」をクリックします。セキュリティチェックの画面では、CAPTCHAによる認証があります。文字が読み取りにくい場合は「別の単語を表示」をクリックして判別できるものが表示されるまで粘り強く続けてください。次の画面に遷移したら、アプリケーションID(App ID)をメモしておきます。</li>
+	</ul>
+	
+	<h2>インストール</h2>
 	
 	<p>以下の説明で、</p>
 	<ul>
-		<li><span class="geeklog">&lt;geeklog_dir&gt;</span>は、システムの config.php が存在するディレクトリ</li>
+		<li><span class="geeklog">&lt;geeklog_dir&gt;</span>は、システムのdb-config.php が存在するディレクトリ</li>
 		<li><span class="public">&lt;public_html&gt;</span>は、lib-common.php が存在するディレクトリ</li>
 		<li><span class="admin">&lt;admin&gt;</span>は、管理者用ファイルが存在するディレクトリ（ふつうは、<span class="public">&lt;public_html&gt;</span>ディレクトリの下）</li>
 	</ul>
@@ -42,24 +52,66 @@
 
 	<ol>
 		<li>ogpプラグインのアーカイブを<span class="geeklog">&lt;geeklog_dir&gt;</span>/pluginsディレクトリに展開します。ogpという名前のディレクトリができます。</li>
-		<li>adminディレクトリを作ります。<span class="admin">&lt;admin&gt;</span>/plugins/ ディレクトリの下にogpという名前のディレクトリを作ります。</li>
-		<li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/ ディレクトリに移動します。adminディレクトリの内容を、2.で作成した <span class="admin">&lt;admin&gt;</span>/plugins/ogp/ ディレクトリにコピーします。</li>
-		<li><span class="public">&lt;public_html&gt;</span>/layout/使用するテーマ/header.thtmlを修正します。<br>
-		(before) <code>&lt;html{html_attribute}{xmlns}&gt;</code><br>
-		(after) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
+		<li><span class="public">&lt;public_html&gt;</span>ディレクトリの下にogpという名前のディレクトリを作ります。</li>
+		<li><span class="admin">&lt;admin&gt;</span>/pluginsディレクトリの下にogpという名前のディレクトリを作ります。</li>
+		<li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/public_htmlディレクトリに移動し、その内容をを2.で作成した <span class="public">&lt;public_html&gt;</span>/ogpディレクトリにコピーします。</li>
+		<li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/adminディレクトリに移動し、その内容を3.で作成した <span class="admin">&lt;admin&gt;</span>/plugins/ogpディレクトリにコピーします。</li>
+		<li><span class="public">&lt;public_html&gt;</span>/layout/使用するテーマ/header.thtmlを修正します。<br><br>
+		(変更前) <code>&lt;html{html_attribute}{xmlns}&gt;</code><br><br>
+		(変更後) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
 		</li>
-		<li>Rootユーザーとしてログインし、プラグインエディタからインストールを実行します。失敗した場合には、エラーログ（error.log）を調べます。この時点で、ogpプラグインはインストールされ、機能しているはずです。</li>
-		<li><strong>重要</strong>: コンフィギュレーションでFacebookユーザーIDかFacebookアプリケーションIDのいずれかを設定してください。ユーザーIDがわからない場合は、<a href="http://apps.facebook.com/what-is-my-user-id/">このアプリケーション</a>が便利です。</li>
+		<li>Geeklog-1.8.0よりも古いバージョンを使用している場合は、次のコードを上記header.thtmlと同じディレクトリ内にあるfooter.thtmlの&lt;/body&gt;タグの直前に追加します。<br>
+		<code>
+		&lt;div id="fb-root"&gt;&lt;/div&gt;
+&lt;script&gt;
+  window.fbAsyncInit = function() {
+	FB.init({appId: '<strong>FacebookアプリケーションID</strong>', status: true, cookie: true,
+			 xfbml: true, channelURL: '<strong>サイトのURL</strong>/admin/plugins/ogp/channel.php'});
+  };
+  (function() {
+	var e = document.createElement('script'); e.async = true;
+	e.src = document.location.protocol +
+	  '//connect.facebook.net/<strong>ja_JP</strong>/all.js';
+	document.getElementById('fb-root').appendChild(e);
+  }());
+&lt;/script&gt;
+		</code>
+		<p><strong>FacebookアプリケーションID</strong>、<strong>サイトのURL</strong>は適切な値に置き換えます。日本語以外に対応するには、<strong>ja_JP</strong>の部分を希望するロケールに変更します。対応しているロケールは<a href="http://www.facebook.com/translations/FacebookLocales.xml">こちらのXMLファイル</a>を参照してください。なお、Geeklog-1.8.0以降の場合、この作業は不要です。</p></li>
+		<li>Rootユーザーとしてログインし、プラグインエディタからインストールを実行します。失敗した場合には、エラーログ（error.log）を調べます。</li>
+		<li><strong>重要</strong>: コンフィギュレーション &gt; OGPでFacebookユーザーIDとFacebookアプリケーションIDを指定します。「いいね!」ボタンやコメント機能を使用しない場合、後者の設定は不要です。この時点で、「いいね!」ボタンやコメント機能は自動タグとして利用可能になっています（それぞれ、<strong>[ogp:like]</strong>と<strong>[ogp:comments]</strong>）。</li>
+		<li>「いいね!」ボタンやコメント機能が記事で自動的に表示されるようにするには、テンプレートファイルに追加します。上記header.thtmlと同じディレクトリ内にあるfeaturedstorytext.thtmlとstorytext.thtmlにテンプレート変数を追加します。「いいね!」ボタンは<strong>{ogp_like}</strong>、コメント機能は<strong>{ogp_comments}</strong>です。</li>
+		<li>「いいね!」ボタンやコメント機能の設定は、コンフィギュレーション &gt; OGPで行います。</li>
 	</ol>
 
-	<h2>アンインストール:</h2>
+	<h2>アンインストール</h2>
 
 	<ol>
-		<li>プラグインエディタから、ogp プラグインをアンインストールします。</li>
-		<li>インストールの過程で作成した2つのディレクトリ（<span class="geeklog">&lt;geeklog-dir&gt;</span>/plugins/ogp/と<span class="admin">&lt;admin&gt;</span>/plugins/ogp/ を削除します。</li>
+		<li>プラグインエディタから、ogpプラグインをアンインストールします。</li>
+		<li>インストールの過程で作成した3つのディレクトリ（<span class="geeklog">&lt;geeklog-dir&gt;</span>/plugins/ogpと<span class="public">&lt;public_html&gt;</span>/ogpと<span class="admin">&lt;admin&gt;</span>/plugins/ogp）を削除します。</li>
 	</ol>
 
-	<p>これでおしまいです。</p>
-
+	<h2>変更履歴</h2>
+	
+	<table>
+		<tr>
+			<th>バージョン</th>
+			<th>日付(YYYY-MM-DD)</th>
+			<th>詳細</th>
+		</tr>
+		<tr>
+			<td>1.1.0</td>
+			<td>2011-09-11</td>
+			<td>
+				<span class="new">&nbsp;New! </span>&nbsp;「いいね!」ボタンとコメント機能をサポートしました。
+			</td>
+		</tr>
+		<tr>
+			<td>1.0.0</td>
+			<td>2011-09-04</td>
+			<td>
+				<span class="new">&nbsp;New! </span>&nbsp;最初の公開バージョン。
+			</td>
+		</tr>
+	</table>
 </body>
 </html>

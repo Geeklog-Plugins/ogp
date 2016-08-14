@@ -35,10 +35,6 @@ $LANG_OGP = array (
 	'fb_ids_not_set'	=> 'OGP: エラー!　最初に「コンフィギュレーション」でFacebookユーザーIDかFacebookアプリケーションIDのいずれかを指定してください。',
 );
 
-
-
-
-
 // Localization of the Admin Configuration UI
 $LANG_configsections['ogp'] = array(
     'label' => $LANG_OGP['plugin'],
@@ -46,20 +42,43 @@ $LANG_configsections['ogp'] = array(
 );
 
 $LANG_confignames['ogp'] = array(
-	'fb_user_ids'	=> 'FacebookユーザーID',
-	'fb_app_id'		=> 'FacebookアプリケーションID',
+	'fb_user_ids'			=> 'FacebookユーザーID',
+	'fb_app_id'				=> 'FacebookアプリケーションID',
+	'fb_default_img_url'	=> 'サイトのデフォルト画像',
+	'like_send'				=> '「送る」ボタンを表示する',
+	'like_show_faces'		=> '顔を表示する',
+	'like_style_layout'		=> 'レイアウト',
+	'like_width'			=> '幅（ピクセル）',
+	'like_verb'				=> '動作',
+	'like_color'			=> '配色',
+	'like_font'				=> 'フォント',
+	'comments_num_posts'	=> 'コメントの表示数',
+	'comments_width'		=> '幅（ピクセル）',
+	'comments_color'		=> '配色',
 );
 
 $LANG_configsubgroups['ogp'] = array(
-    'sg_main' => '主要設定'
+    'sg_main' 				=> '主要設定'
 );
 
 $LANG_fs['ogp'] = array(
-    'fs_main'        => $LANG_OGP['plugin'] . 'の主要設定',
+    'fs_main'       		=> $LANG_OGP['plugin'] . 'の主要設定',
+	'fs_like'				=> 'Facebookいいね!ボタンの設定',
+	'fs_comments'			=> 'Facebookコメントの設定',
 );
 
 // Note: entries 0, 1, 9, and 12 are the same as in $LANG_configselects['Core']
 $LANG_configselects['ogp'] = array(
     0 => array('はい' => 1, 'いいえ' => 0),
     1 => array('はい' => TRUE, 'いいえ' => FALSE),
+	2 => array(
+			'標準' => 'standard', 'ボタン' => 'button_count',
+			'ボックス' => 'box_count'
+		),
+	3 => array('いいね!' => 'like', 'おすすめ' => 'recommend'),
+	4 => array('明るい色' => 'light', '暗い色' => 'dark'),
+	5 => array('標準' => '', 'arial' => 'arial', 'lucida grande' => 'lucida grande',
+			'segoe ui' => 'segoe ui', 'tahoma' => 'tahoma',
+			'trebuchet ms' => 'trebuchet ms', 'verdana' => 'verdana',
+		),
 );
