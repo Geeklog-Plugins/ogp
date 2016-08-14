@@ -200,7 +200,9 @@ function plugin_getheadercode_ogp() {
 	}
 	
 	if (!empty($desc)) {
-		$desc    = OGP_escValue($desc);
+		$desc = OGP_escValue($desc);
+		$desc = str_replace(array("\n", "\r"), ' ', $desc);
+		$desc = preg_replace('/\s\s+/ms', ' ', $desc);
 		$retval .= '<meta property="og:description" content="' . $desc . '"'
 				.  XHTML . '>' . LB;
 	}
