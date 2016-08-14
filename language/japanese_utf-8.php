@@ -33,6 +33,7 @@ $LANG_OGP = array (
     'plugin'           	=> 'OGP',
 	'admin'		       	=> 'OGP',
 	'fb_ids_not_set'	=> 'OGP: エラー!　最初に「コンフィギュレーション」でFacebookユーザーIDかFacebookアプリケーションIDのいずれかを指定してください。',
+	'fb_appid_not_set'	=> 'OGP: エラー!　FacebookアプリケーションIDがセットされていません。',
 );
 
 // Localization of the Admin Configuration UI

@@ -341,6 +341,7 @@ function plugin_getheadercode_ogp() {
 	// recommended.
 	$site_name = OGP_escValue($site_name);
 	$type      = OGP_escValue($type);
+	$locale    = OGP_escValue(OGP_getLocale());
 	$title     = OGP_escValue($title);
 	$desc      = OGP_escValue($desc);
 
@@ -351,6 +352,8 @@ function plugin_getheadercode_ogp() {
 			. '<meta property="og:url" content="' . $url . '"' 
 			. XHTML . '>' . LB
 			. '<meta property="og:type" content="' . $type . '"'
+			. XHTML . '>' . LB
+			. '<meta property="og:locale" content="' . $locale . '"'
 			. XHTML . '>' . LB
 			. '<meta property="og:title" content="' . $title . '"'
 			. XHTML . '>' . LB
@@ -425,7 +428,7 @@ function plugin_cclabel_ogp() {
 	if (SEC_hasRights('ogp.edit')) {
 		$pi_name   = OGP_str('admin');
 
-		if (!OGP_isFbUserIdSet() AND !OGP_isFbAppIdSet()) {
+		if (!OGP_isFbUserIdSet() OR !OGP_isFbAppIdSet()) {
 			$pi_name .= '!';
 		}
 
@@ -502,8 +505,9 @@ function plugin_upgrade_ogp() {
 			
 			case '1.1.2':
 			case '1.1.3':
+			case '1.1.4':
 				// Does nothing
-				$pi_version = '1.1.4';
+				$pi_version = '1.1.5';
 				break;
 			
 			default:
@@ -783,7 +787,23 @@ function OGP_gerArgs($str) {
 * @return  boolean TRUE = supported, FALSE = otherwise
 */
 function OGP_isSupportedItem($url) {
-	global $_PLUGINS, $_OGP_CONF;
+	global $_PLUGINS, $_TABLES, $_OGP_CONF;
+	
+	$pi_version = DB_getItem($_TABLES['plugins'], 'pi_version', "pi_name = 'ogp'");
+	
+	// Silently updates the plugin
+	if ((version_compare($pi_version, '1.1.2') < 0) AND
+		(version_compare($_OGP_CONF['pi_version'], '1.1.2') >= 0)) {
+		// Silently upgrades the plugin to prevent configuration error
+		plugin_upgrade_ogp();
+	}
+	
+	if (!isset($_OGP_CONF['types']) OR !is_array($_OGP_CONF['types'])) {
+		$_OGP_CONF['types'] = array(
+			'article', 'staticpages', 'calendar', 'calendarjp', 'links',
+			'polls', 'filemgmt', 'downloads',
+		);
+	}
 	
 	// Article
 	if ((in_array('article', $_OGP_CONF['types']) AND preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url)) 
@@ -835,30 +855,27 @@ function OGP_like($params = array()) {
 		} else if (($style_layout === 'box_count') AND ($width < 55)) {
 			$width = 55;
 		}
-
-		$verb = isset($params['verb'])
-			  ? $params['verb']
-			  : $_OGP_CONF['like_verb'];
+		
+		$appId = trim($_OGP_CONF['fb_app_id']);
+		$verb  = isset($params['verb'])
+			   ? $params['verb']
+			   : $_OGP_CONF['like_verb'];
 		$color = isset($params['color'])
 			   ? $params['color']
 			   : $_OGP_CONF['like_color'];
-		$font = isset($params['font'])
-			  ? $params['font']
-			  : $_OGP_CONF['like_font'];
+		$font  = isset($params['font'])
+			   ? $params['font']
+			   : $_OGP_CONF['like_font'];
 
 		if (!empty($font)) {
 			$font = ' data-font="' . $font . '"';
 		}
 
 		$retval = <<<EOD
-<script>(function(d){
-var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-js = d.createElement('script'); js.id = id; js.async = true;
-js.src = "//connect.facebook.net/{$locale}/all.js#appId=227583933955521&xfbml=1";
-d.getElementsByTagName('head')[0].appendChild(js);
-}(document));</script>
 <div class="fb-like" data-href="{$url}" data-send="{$send}" data-width="{$width}" data-show-faces="{$show_faces}" data-layout="{$style_layout}" data-action="{$verb}" data-colorscheme="{$color}"{$font}></div>
 EOD;
+	} else {
+		COM_errorLog(OGP_str('fb_appid_not_set'));
 	}
 	
 	return $retval;
@@ -898,14 +915,10 @@ function OGP_comments($params = array()) {
 			   : $_OGP_CONF['comments_color'];
 
 		$retval = <<<EOD
-<script>(function(d){
-  var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-  js = d.createElement('script'); js.id = id; js.async = true;
-  js.src = "//connect.facebook.net/{$locale}/all.js#xfbml=1";
-  (d.getElementsByTagName('head')[0]||d.body).appendChild(js);
-}(document));</script>
 <div class="fb-comments" data-href="{$url}" data-num-posts="{$num_posts}" data-width="{$width}" data-colorscheme="{$color}"></div>
 EOD;
+	} else {
+		COM_errorLog(OGP_str('fb_appid_not_set'));
 	}
 	
 	return $retval;
