@@ -31,4 +31,5 @@ if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== FALSE) {
 }
 
 // Open Graph Protocol Plugin Main Settings
-$_CONF_VALIDATE['ogp']['facebook_ids'] = array('rule' => 'stringOrEmpty');
+$_CONF_VALIDATE['ogp']['fb_user_ids'] = array('rule' => 'stringOrEmpty');
+$_CONF_VALIDATE['ogp']['fb_app_ids'] = array('rule' => 'stringOrEmpty');
