@@ -25,8 +25,8 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------|
 
-if (strpos(strtolower($_SERVER['PHP_SELF']), strtolower(basename(__FILE__))) !== FALSE) {
-    die('This file can not be used on its own!');
+if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== FALSE) {
+    die('This file cannot be used on its own!');
 }
 
 $LANG_OGP = array(

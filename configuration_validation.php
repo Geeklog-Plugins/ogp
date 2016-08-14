@@ -27,7 +27,7 @@
 // +---------------------------------------------------------------------------+
 
 if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== FALSE) {
-	die('This file can not be used on its own!');
+	die('This file cannot be used on its own!');
 }
 
 require_once dirname(__FILE__) . '/install_defaults.php';

@@ -27,7 +27,7 @@
 // +---------------------------------------------------------------------------+
 
 if (stripos($_SERVER['PHP_SELF'], 'functions.inc') !== FALSE) {
-	die('This file can not be used on its own.');
+	die('This file cannot be used on its own.');
 }
 
 // Language file Include
@@ -81,8 +81,8 @@ function OGP_replaceTags($content) {
 	$start_pos = 0;
 	$autolinkModules = PLG_collectTags();
 
-	while (($start_pos < MBYTE_strlen($content))
-	 AND preg_match('/\[(.+?)\s*:([^\]]*)\]/ms', $content, $match, 0, $start_pos)) {
+	while (($start_pos < MBYTE_strlen($content)) AND
+			preg_match('/\[(.+?)\s*:([^\]]*)\]/ms', $content, $match, 0, $start_pos)) {
 		$tag      = $match[1];
 		$module   = $autolinkModules[$tag];
 		$tagstr   = $match[0];
@@ -90,7 +90,7 @@ function OGP_replaceTags($content) {
 		$function = 'plugin_autotags_' . $module;
 
 		if (array_key_exists($tag, $autolinkModules) AND
-			function_exists($function)) {
+				function_exists($function)) {
 			$params = explode(' ', $match[2]);
 
 			if (is_array($params) AND (count($params) > 0)) {
@@ -222,17 +222,33 @@ function plugin_getheadercode_ogp() {
 		$type = 'website';
 	} else if (preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url, $match)) {
 		// Article
-		$sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
-			 . "FROM {$_TABLES['stories']} AS s "
-			 . "  LEFT JOIN {$_TABLES['topics']} AS t "
-			 . "    ON s.tid = t.tid "
-			 . "WHERE (s.sid ='" . addslashes(COM_applyFilter($match[1])) . "') "
-			 . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
-			 . COM_getPermSQL('AND', 0, 2, 's')
-			 . COM_getTopicSQL('AND', 0, 't');
+		$sid = COM_applyFilter($match[1]);
+		$version = preg_replace('/[^0-9\.]/', '', VERSION);
+
+		if (version_compare($version, '2.0.0') >= 0) {
+			$sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description, ta.tid "
+				 . "FROM {$_TABLES['stories']} AS s "
+				 . "LEFT JOIN {$_TABLES['topic_assignments']} AS ta "
+				 . "  ON s.sid = ta.id "
+				 . "WHERE (s.sid ='" . addslashes($sid) . "') "
+				 . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
+				 . COM_getPermSQL('AND', 0, 2, 's')
+				 . COM_getTopicSQL('AND', 0, 'ta')
+				 . " AND (ta.type = 'article') ";
+		} else {
+			$sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
+				 . "FROM {$_TABLES['stories']} AS s "
+				 . "  LEFT JOIN {$_TABLES['topics']} AS t "
+				 . "    ON s.tid = t.tid "
+				 . "WHERE (s.sid ='" . addslashes($sid) . "') "
+				 . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
+				 . COM_getPermSQL('AND', 0, 2, 's')
+				 . COM_getTopicSQL('AND', 0, 't');
+		}
+
 		$result = DB_query($sql);
 
-		if (!DB_error() AND (DB_numRows($result) == 1)) {
+		if (!DB_error() AND (DB_numRows($result) >= 1)) {
 			$A = DB_fetchArray($result, FALSE);
 			$A = array_map('stripslashes', $A);
 
@@ -508,8 +524,9 @@ function plugin_upgrade_ogp() {
 			case '1.1.3':
 			case '1.1.4':
 			case '1.1.5':
+			case '1.1.6':
 				// Does nothing
-				$pi_version = '1.1.6';
+				$pi_version = '1.1.7';
 				break;
 			
 			default:
@@ -942,7 +959,7 @@ function plugin_autotags_ogp($op, $content = '', $autotag = '') {
 			case 'like':
 				$replace = OGP_like($params);
 				break;
-			
+
 			case 'comments':
 				$replace = OGP_comments($params);
 				break;

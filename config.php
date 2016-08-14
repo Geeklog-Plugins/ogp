@@ -27,7 +27,7 @@
 // +---------------------------------------------------------------------------+
 
 if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== FALSE) {
-    die('This file can not be used on its own!');
+    die('This file cannot be used on its own!');
 }
 
 global $_OGP_CONF;
@@ -36,7 +36,7 @@ $_OGP_CONF = array();
 
 // Plugin info
 
-$_OGP_CONF['pi_version'] = '1.1.6';						// Plugin Version
+$_OGP_CONF['pi_version'] = '1.1.7';						// Plugin Version
 $_OGP_CONF['gl_version'] = '1.6.0';						// GL Version plugin for
 $_OGP_CONF['pi_url']     = 'http://mystral-kk.net/';	// Plugin Homepage
 $_OGP_CONF['GROUPS']     = array(
