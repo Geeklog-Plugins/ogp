@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | public_html/admin/plugins/ogp/index.php                                   |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2012 mystral-kk - geeklog AT mystral-kk DOT net        |
+// | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -32,13 +32,29 @@ require_once '../../../lib-common.php';
 if (!SEC_hasRights('ogp.edit')) {
 	// Someone is trying to illegally access this page
 	COM_errorLog("Someone has tried to illegally access the ogp Admin page.  User id: {$_USER['uid']}, Username: {$_USER['username']}, IP: {$_SERVER['REMOTE_ADDR']}", 1);
-	$display = COM_siteHeader()
-			 . COM_startBlock(OGP_esc($LANG_ACCESS['accessdenied']))
+	$content = COM_startBlock(OGP_esc($LANG_ACCESS['accessdenied']))
 			 . OGP_esc($LANG_ACCESS['plugin_access_denied_msg'])
-			 . COM_endBlock()
-			 . COM_siteFooter();
-	COM_output($display);
+			 . COM_endBlock();
+	
+	if (is_callable('COM_createHTMLDocument')) {
+		$display = COM_createHTMLDocument($content);
+	} else {
+		$display = COM_siteHeader()
+				 . $content
+				 . COM_siteFooter();
+	}
+	
+	if (is_callable('COM_output')) {
+		COM_output($display);
+	} else {
+		echo $display;
+	}
+
 	exit;
 }
 
-echo COM_refresh($_CONF['site_admin_url'] . '/configuration.php');
+if (is_callable('COM_redirect')) {
+	COM_redirect($_CONF['site_admin_url'] . '/configuration.php');
+} else {
+	echo COM_refresh($_CONF['site_admin_url'] . '/configuration.php');
+}

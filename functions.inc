@@ -1,11 +1,11 @@
 <?php
-//
+
 // +---------------------------------------------------------------------------+
 // | Open Graph Protocol Plugin for Geeklog - The Ultimate Weblog              |
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/functions.inc                                         |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2012 mystral-kk - geeklog AT mystral-kk DOT net        |
+// | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -26,8 +26,8 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 
-if (stripos($_SERVER['PHP_SELF'], 'functions.inc') !== FALSE) {
-	die('This file cannot be used on its own.');
+if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== false) {
+	die('This file can not be used on its own.');
 }
 
 // Language file Include
@@ -47,6 +47,12 @@ global $_OGP_CONF;
 
 require_once $_CONF['path'] . 'plugins/ogp/config.php';
 OGP_loadConfig();
+
+if (!is_callable('DB_escapeString')) {
+	function DB_escapeString($string) {
+		return addslashes($string);
+	}
+}
 
 // +---------------------------------------------------------------------------+
 // | Geeklog Plugin API Implementations                                        |
@@ -72,7 +78,7 @@ function plugin_geticon_ogp() {
 function OGP_replaceTags($content) {
 	global $_CONF, $_TABLES, $LANG32;
 
-	if (isset($_CONF['disable_autolinks']) AND ($_CONF['disable_autolinks'] == 1)) {
+	if (isset($_CONF['disable_autolinks']) && ($_CONF['disable_autolinks'] == 1)) {
 		// autolinks are disabled - return $content unchanged
 		return $content;
 	}
@@ -81,19 +87,19 @@ function OGP_replaceTags($content) {
 	$start_pos = 0;
 	$autolinkModules = PLG_collectTags();
 
-	while (($start_pos < MBYTE_strlen($content)) AND
-			preg_match('/\[(.+?)\s*:([^\]]*)\]/ms', $content, $match, 0, $start_pos)) {
+	while (($start_pos < MBYTE_strlen($content))
+	 && preg_match('/\[(.+?)\s*:([^\]]*)\]/ms', $content, $match, 0, $start_pos)) {
 		$tag      = $match[1];
 		$module   = $autolinkModules[$tag];
 		$tagstr   = $match[0];
 		$length   = MBYTE_strlen($tagstr);
 		$function = 'plugin_autotags_' . $module;
 
-		if (array_key_exists($tag, $autolinkModules) AND
-				function_exists($function)) {
+		if (array_key_exists($tag, $autolinkModules) &&
+			function_exists($function)) {
 			$params = explode(' ', $match[2]);
 
-			if (is_array($params) AND (count($params) > 0)) {
+			if (is_array($params) && (count($params) > 0)) {
 				$param1 = $params[0];
 			} else {
 				$param1 = '';
@@ -137,54 +143,6 @@ function OGP_replaceTags($content) {
 }
 
 /**
-* Renders the actual content of a static page (without any surrounding blocks)
-*
-* @param    string  $sp_content the content (HTML or PHP source)
-* @param    int     $sp_php     flag: 1 = content is PHP source, 0 = is HTML
-* @param    string  $query      optional search query string to highlight
-* @return   string              rendered content (HTML)
-*
-*/
-function OGP_SP_render_content($sp_content, $sp_php, $query = '') {
-	global $_SP_CONF, $LANG_STATIC;
-
-	$retval = '';
-
-	if ($_SP_CONF['allow_php'] == 1) {
-		// Check for type (ie html or php)
-		if ($sp_php == 1) {
-			$retval = eval($sp_content);
-		} else if ($sp_php == 2) {
-			ob_start();
-			eval($sp_content);
-			$retval = ob_get_contents();
-			ob_end_clean();
-		} else {
-			$retval = $sp_content;
-		}
-		
-		$retval = OGP_replaceTags($retval);
-		
-		if (! empty($query)) {
-			$retval = COM_highlightQuery($retval, $query);
-		}
-	} else {
-		if ($sp_php != 0) {
-			COM_errorLog("PHP in static pages is disabled. Can not display page.", 1);
-			$retval .= $LANG_STATIC['deny_msg'];
-		} else {
-			$retval .= OGP_replaceTags($sp_content);
-			
-			if (! empty($query)) {
-				$retval = COM_highlightQuery($retval, $query);
-			}
-		}
-	}
-
-	return $retval;
-}
-
-/**
 * Returns code to be added to <head> section
 */
 function plugin_getheadercode_ogp() {
@@ -212,54 +170,55 @@ function plugin_getheadercode_ogp() {
 		$fb_app_id = trim($_OGP_CONF['fb_app_id']);
 	}
 
-	if (empty($fb_user_ids) AND empty($fb_app_id)) {
+	if (empty($fb_user_ids) && empty($fb_app_id)) {
 		COM_errorLog(OGP_str('fb_ids_not_set'));
 	}
 
-	if ((strcasecmp($url, $_CONF['site_url'] . '/') === 0) OR
+	if ((strcasecmp($url, $_CONF['site_url'] . '/') === 0) ||
 		(strcasecmp($url, $_CONF['site_url']) === 0)) {
 		// Site HOME
 		$type = 'website';
-	} else if (preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url, $match)) {
+	} elseif (stripos($url, $_CONF['site_url'] . '/article.php') === 0) {
 		// Article
-		$sid = COM_applyFilter($match[1]);
-		$version = preg_replace('/[^0-9\.]/', '', VERSION);
+		COM_setArgNames(array('story'));
+		$sid = COM_getArgument('story');
+		$sid = COM_applyFilter($sid);
+		$sid = DB_escapeString($sid);
 
-		if (version_compare($version, '2.0.0') >= 0) {
-			$sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description, ta.tid "
-				 . "FROM {$_TABLES['stories']} AS s "
-				 . "LEFT JOIN {$_TABLES['topic_assignments']} AS ta "
-				 . "  ON s.sid = ta.id "
-				 . "WHERE (s.sid ='" . addslashes($sid) . "') "
+		if (version_compare(VERSION, '2.0.0') >= 0) {
+			$sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
+				 . "FROM {$_TABLES['stories']} AS s, {$_TABLES['topic_assignments']} AS ta "
+				 . "WHERE (ta.type = 'article') AND (ta.id = s.sid) "
+				 . "  AND (s.sid ='{$sid}') "
 				 . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
 				 . COM_getPermSQL('AND', 0, 2, 's')
 				 . COM_getTopicSQL('AND', 0, 'ta')
-				 . " AND (ta.type = 'article') ";
+				 . "GROUP BY title, introtext, bodytext, meta_description ";
 		} else {
 			$sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
 				 . "FROM {$_TABLES['stories']} AS s "
 				 . "  LEFT JOIN {$_TABLES['topics']} AS t "
 				 . "    ON s.tid = t.tid "
-				 . "WHERE (s.sid ='" . addslashes($sid) . "') "
+				 . "WHERE (s.sid ='{$sid}') "
 				 . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
 				 . COM_getPermSQL('AND', 0, 2, 's')
-				 . COM_getTopicSQL('AND', 0, 't');
+				 . COM_getTopicSQL('AND', 0, 't')
+				 . "GROUP BY title, introtext, bodytext, meta_description ";
 		}
 
 		$result = DB_query($sql);
 
-		if (!DB_error() AND (DB_numRows($result) >= 1)) {
-			$A = DB_fetchArray($result, FALSE);
+		if (!DB_error() && (DB_numRows($result) == 1)) {
+			$A = DB_fetchArray($result, false);
 			$A = array_map('stripslashes', $A);
 
 			$title     = $A['title'];
 			$introtext = OGP_replaceTags($A['introtext']);
 			$bodytext  = OGP_replaceTags($A['bodytext']);
 			$desc      = $A['meta_description'];
-
 			$body = $introtext . ' ' . $bodytext;
 
-			if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $body, $match)) {
+			if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@si', $body, $match)) {
 				$image = $match[1];
 				$image = OGP_fixUri($image);
 			}
@@ -268,16 +227,18 @@ function plugin_getheadercode_ogp() {
 				$desc = $introtext;
 			}
 		}
-	} else if (preg_match("@index\.php\?topic=(.+)$@i", $url, $match)) {
+	} elseif (preg_match("@index\.php\?topic=(.+)$@i", $url, $match)) {
 		// Topic
+		$tid = $match[1];
+		$tid = DB_escapeString(COM_applyFilter($tid));
 		$sql = "SELECT topic, imageurl, meta_description "
 			 . "FROM {$_TABLES['topics']} "
-			 . "WHERE (tid ='" . addslashes(COM_applyFilter($match[1])) . "') "
+			 . "WHERE (tid ='{$tid}') "
 			 . COM_getTopicSQL('AND', 0);
 		$result = DB_query($sql);
 
-		if (!DB_error() AND (DB_numRows($result) == 1)) {
-			$A = DB_fetchArray($result, FALSE);
+		if (!DB_error() && (DB_numRows($result) == 1)) {
+			$A = DB_fetchArray($result, false);
 			$A = array_map('stripslashes', $A);
 
 			$title = $A['topic'];
@@ -288,20 +249,20 @@ function plugin_getheadercode_ogp() {
 				$desc = $title;
 			}
 		}
-	} else if (in_array('staticpages', $_PLUGINS) AND
+	} elseif (in_array('staticpages', $_PLUGINS) &&
 			   preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url, $match)) {
 		// Staticpages
+		$sp_id = $match[1];
+		$sp_id = COM_applyFilter($sp_id);
 		$output  = '';
 		$args    = array(
-					'sp_id' => $match[1],
+					'sp_id' => $sp_id,
 					'mode'  => 'autotag',
 		);
 		$svc_msg = array();
 
 		if (PLG_invokeService('staticpages', 'get', $args, $output, $svc_msg) == PLG_RET_OK) {
-			$content = OGP_SP_render_content(
-				stripslashes($output['sp_content']), $output['sp_php']
-			);
+			$content = $output['sp_content'];
 			$title   = $output['sp_title'];
 			$desc    = $output['meta_description'];
 
@@ -314,17 +275,19 @@ function plugin_getheadercode_ogp() {
 				$desc = $content;
 			}
 		}
-	} else if (in_array('calendar', $_PLUGINS) AND
+	} elseif (in_array('calendar', $_PLUGINS) &&
 			   preg_match("@calendar/event\.php\?eid=(.+)$@i", $url, $match)) {
 		// Calendar
+		$eid = $match[1];
+		$eid = DB_escapeString(COM_applyFilter($eid));
 		$sql = "SELECT title, description, event_type, location "
 			 . "FROM {$_TABLES['events']} "
-			 . "WHERE (eid = '" . addslashes($match[1]) . "') "
+			 . "WHERE (eid = '{$eid}') "
 			 . COM_getPermSQL('AND');
 		$result = DB_query($sql);
 		
-		if (!DB_error() AND (DB_numRows($result) == 1)) {
-			$A = DB_fetchArray($result, FALSE);
+		if (!DB_error() && (DB_numRows($result) == 1)) {
+			$A = DB_fetchArray($result, false);
 			$title = $A['title'];
 			$desc  = $A['description'];
 			
@@ -333,17 +296,19 @@ function plugin_getheadercode_ogp() {
 				$image = OGP_fixUri($image);
 			}
 		}
-	} else if (in_array('calendarjp', $_PLUGINS) AND
+	} elseif (in_array('calendarjp', $_PLUGINS) &&
 			   preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url, $match)) {
 		// Calendar
+		$eid = $match[1];
+		$eid = DB_escapeString(COM_applyFilter($eid));
 		$sql = "SELECT title, description, event_type, location "
 			 . "FROM {$_TABLES['eventsjp']} "
-			 . "WHERE (eid = '" . addslashes($match[1]) . "') "
+			 . "WHERE (eid = '{$eid}') "
 			 . COM_getPermSQL('AND');
 		$result = DB_query($sql);
 		
-		if (!DB_error() AND (DB_numRows($result) == 1)) {
-			$A = DB_fetchArray($result, FALSE);
+		if (!DB_error() && (DB_numRows($result) == 1)) {
+			$A = DB_fetchArray($result, false);
 			$title = $A['title'];
 			$desc  = $A['description'];
 			
@@ -428,10 +393,10 @@ EOD;
 /**
 * Checks to see if this plugin uses comments
 *
-* @return   boolean TRUE or FALSE
+* @return   boolean TRUE or false
 */
 function plugin_commentsupport_ogp() {
-	return FALSE;
+	return false;
 }
 
 /**
@@ -445,7 +410,7 @@ function plugin_cclabel_ogp() {
 	if (SEC_hasRights('ogp.edit')) {
 		$pi_name = OGP_str('admin');
 
-		if (!OGP_isFbUserIdSet() OR !OGP_isFbAppIdSet()) {
+		if (!OGP_isFbUserIdSet() || !OGP_isFbAppIdSet()) {
 			$pi_name .= '!';
 		}
 
@@ -468,7 +433,7 @@ function plugin_getadminoption_ogp() {
 	if (SEC_hasRights('ogp.edit')) {
 		$pi_name = OGP_str('admin');
 
-		if (!OGP_isFbUserIdSet() OR !OGP_isFbAppIdSet()) {
+		if (!OGP_isFbUserIdSet() || !OGP_isFbAppIdSet()) {
 			$pi_name .= '!';
 		}
 
@@ -499,7 +464,7 @@ function plugin_upgrade_ogp() {
 	global $_CONF, $_TABLES, $_OGP_CONF;
 
 	$pi_version = DB_getItem($_TABLES['plugins'], 'pi_version', "pi_name = 'ogp'");
-	$done = FALSE;
+	$done = false;
 	
 	while ($pi_version !== $_OGP_CONF['pi_version']) {
 		switch ($pi_version) {
@@ -525,8 +490,9 @@ function plugin_upgrade_ogp() {
 			case '1.1.4':
 			case '1.1.5':
 			case '1.1.6':
+			case '1.1.7':
 				// Does nothing
-				$pi_version = '1.1.7';
+				$pi_version = '1.1.8';
 				break;
 			
 			default:
@@ -542,7 +508,7 @@ function plugin_upgrade_ogp() {
 	$result = DB_query($sql);
 	COM_errorLog(ucfirst("ogp") . " plugin was successfully updated to version {$_OGP_CONF['pi_version']}.");
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -587,7 +553,7 @@ function OGP_loadConfig() {
 	if ($config->group_exists('ogp')) {
 		$temp = $config->get_config('ogp');
 		
-		if (is_array($temp) AND (count($temp) > 0)) {
+		if (is_array($temp) && (count($temp) > 0)) {
 			$_OGP_CONF = array_merge($_OGP_CONF, $temp);
 		}
 	}
@@ -602,9 +568,9 @@ function OGP_loadConfig() {
 function plugin_getdocumentationurl_ogp($file) {
 	global $_CONF;
 
-	static $doc_url = NULL;
+	static $doc_url = null;
 
-	if ($doc_url === NULL) {
+	if ($doc_url === null) {
 		switch ($file) {
 			case 'index':
 			case 'config':
@@ -619,7 +585,7 @@ function plugin_getdocumentationurl_ogp($file) {
 				break;
 
 			default:
-				$doc_url = FALSE;
+				$doc_url = false;
 				break;
 		}
 	}
@@ -631,26 +597,26 @@ function plugin_getdocumentationurl_ogp($file) {
 * Provides text for a Configuration tooltip
 *
 * @param    string  $id     Id of config value
-* @return   mixed           Text to use regular tooltip, NULL to use config 
+* @return   mixed           Text to use regular tooltip, null to use config 
 *                           tooltip hack, or empty string when not available
 */
 function plugin_getconfigtooltip_ogp($id) {
 	// Use config tooltip hack where tooltip is read from the config documentation
-	return NULL;
+	return null;
 }
 
 /**
 * Returns a string escaped for HTML output
 */
 function OGP_esc($str) {
-	static $encoding = NULL;
+	static $encoding = null;
 
-	if ($encoding === NULL) {
+	if ($encoding === null) {
 		$encoding = COM_getCharset();
 	}
 
 	if (version_compare(PHP_VERSION, '5.2.3') >= 0) {
-		return htmlspecialchars($str, ENT_QUOTES, $encoding, FALSE);
+		return htmlspecialchars($str, ENT_QUOTES, $encoding, false);
 	} else {
 		return str_replace(
 			array('&amp;&amp;', '&amp;&lt;', '&amp;&gt;', '&amp;&quot;', '&amp;&#039;'),
@@ -663,7 +629,7 @@ function OGP_esc($str) {
 /**
 * Returns a lang var
 */
-function OGP_str($index, $noesc = FALSE) {
+function OGP_str($index, $noesc = false) {
 	global $LANG_OGP;
 
 	if (isset($LANG_OGP[$index])) {
@@ -726,11 +692,11 @@ function OGP_gerArgs($str) {
 	$retval = array();
 	$parts = explode(' ', trim(strtolower($str)));
 
-	if (is_array($parts) AND (count($parts) > 0)) {
+	if (is_array($parts) && (count($parts) > 0)) {
 		foreach ($parts as $part) {
 			$temp = explode(':', trim($part), 2);
 
-			if (is_array($temp) AND (count($temp) === 2)) {
+			if (is_array($temp) && (count($temp) === 2)) {
 				$key   = trim($temp[0]);
 				$value = trim($temp[1]);
 
@@ -738,9 +704,9 @@ function OGP_gerArgs($str) {
 					case 'send':
 					case 'show_faces':
 						if ($value === 'true') {
-							$retval[$key] = TRUE;
-						} else if ($value === 'false') {
-							$retval[$key] = FALSE;
+							$retval[$key] = true;
+						} elseif ($value === 'false') {
+							$retval[$key] = false;
 						}
 
 						break;
@@ -761,14 +727,14 @@ function OGP_gerArgs($str) {
 						break;
 
 					case 'verb':
-						if (($value === 'like') OR ($value === 'recommend')) {
+						if (($value === 'like') || ($value === 'recommend')) {
 							$retval[$key] = $value;
 						}
 
 						break;
 
 					case 'color':
-						if (($value === 'light') OR ($value === 'dark')) {
+						if (($value === 'light') || ($value === 'dark')) {
 							$retval[$key] = $value;
 						}
 
@@ -795,7 +761,7 @@ function OGP_gerArgs($str) {
 * Checks if the content on the current URL is supported by OGP plugin
 *
 * @param   string  $url
-* @return  boolean TRUE = supported, FALSE = otherwise
+* @return  boolean TRUE = supported, false = otherwise
 */
 function OGP_isSupportedItem($url) {
 	global $_PLUGINS, $_TABLES, $_OGP_CONF;
@@ -803,32 +769,29 @@ function OGP_isSupportedItem($url) {
 	$pi_version = DB_getItem($_TABLES['plugins'], 'pi_version', "pi_name = 'ogp'");
 	
 	// Silently updates the plugin
-	if ((version_compare($pi_version, '1.1.2') < 0) AND
+	if ((version_compare($pi_version, '1.1.2') < 0) &&
 		(version_compare($_OGP_CONF['pi_version'], '1.1.2') >= 0)) {
 		// Silently upgrades the plugin to prevent configuration error
 		plugin_upgrade_ogp();
 	}
 	
-	if (!isset($_OGP_CONF['types']) OR !is_array($_OGP_CONF['types'])) {
+	if (!isset($_OGP_CONF['types']) || !is_array($_OGP_CONF['types'])) {
 		$_OGP_CONF['types'] = array(
 			'article', 'staticpages', 'calendar', 'calendarjp', 'links',
 			'polls', 'filemgmt', 'downloads',
 		);
 	}
 	
-	// Article
-	if ((in_array('article', $_OGP_CONF['types']) AND preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url)) OR
-		(in_array('staticpages', $_PLUGINS) AND in_array('staticpages', $_OGP_CONF['types']) AND preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url)) OR
-		(in_array('calendar', $_PLUGINS) AND in_array('calendar', $_OGP_CONF['types']) AND preg_match("@calendar/event\.php\?eid=(.+)$@i", $url)) OR
-		(in_array('calendarjp', $_PLUGINS) AND in_array('calendarjp', $_OGP_CONF['types']) AND preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url)) OR
-		(in_array('links', $_PLUGINS) AND in_array('links', $_OGP_CONF['types']) AND preg_match("@links/index\.php(?:\?category=(.+))?$@i", $url)) OR
-		(in_array('polls', $_PLUGINS) AND in_array('polls', $_OGP_CONF['types']) AND preg_match("@polls/index\.php(?:\?pid=(.+))?$@i", $url)) OR
-		(in_array('filemgmt', $_PLUGINS) AND in_array('filemgmt', $_OGP_CONF['types']) AND preg_match("@filemgmt/index\.php(?:\?id=|/)\d+$@i", $url)) OR
-		(in_array('downloads', $_PLUGINS) AND in_array('downloads', $_OGP_CONF['types']) AND preg_match("@downloads/index\.php(?:\?id=|/).+$@i", $url))) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
+	$retval = (in_array('article', $_OGP_CONF['types']) && preg_match("@article\.php(?:\?story=|/)(.+)$@i", $url)) ||
+		(in_array('staticpages', $_PLUGINS) && in_array('staticpages', $_OGP_CONF['types']) && preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url)) ||
+		(in_array('calendar', $_PLUGINS) && in_array('calendar', $_OGP_CONF['types']) && preg_match("@calendar/event\.php\?eid=(.+)$@i", $url)) ||
+		(in_array('calendarjp', $_PLUGINS) && in_array('calendarjp', $_OGP_CONF['types']) && preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url)) ||
+		(in_array('links', $_PLUGINS) && in_array('links', $_OGP_CONF['types']) && preg_match("@links/index\.php(?:\?category=(.+))?$@i", $url)) ||
+		(in_array('polls', $_PLUGINS) && in_array('polls', $_OGP_CONF['types']) && preg_match("@polls/index\.php(?:\?pid=(.+))?$@i", $url)) ||
+		(in_array('filemgmt', $_PLUGINS) && in_array('filemgmt', $_OGP_CONF['types']) && preg_match("@filemgmt/index\.php(?:\?id=|/)\d+$@i", $url)) ||
+		(in_array('downloads', $_PLUGINS) && in_array('downloads', $_OGP_CONF['types']) && preg_match("@downloads/index\.php(?:\?id=|/).+$@i", $url));
+
+	return $retval;
 }
 
 /**
@@ -860,11 +823,11 @@ function OGP_like($params = array()) {
 			$width = isset($params['width'])
 				   ? $params['width'] : (int) $_OGP_CONF['like_width'];
 
-			if (($style_layout === 'standard') AND ($width < 225)) {
+			if (($style_layout === 'standard') && ($width < 225)) {
 				$width = 225;
-			} else if (($style_layout === 'button_count') AND ($width < 90)) {
+			} elseif (($style_layout === 'button_count') && ($width < 90)) {
 				$width = 90;
-			} else if (($style_layout === 'box_count') AND ($width < 55)) {
+			} elseif (($style_layout === 'box_count') && ($width < 55)) {
 				$width = 55;
 			}
 		
@@ -949,7 +912,7 @@ function plugin_autotags_ogp($op, $content = '', $autotag = '') {
 
 	if ($op === 'tagname') {
 		return array('ogp', 'fb');
-	} else if ($op === 'parse') {
+	} elseif ($op === 'parse') {
 		$url     = COM_getCurrentURL();
 		$what    = COM_applyFilter($autotag['parm1']);
 		$params  = OGP_gerArgs($autotag['parm2']);
@@ -959,7 +922,7 @@ function plugin_autotags_ogp($op, $content = '', $autotag = '') {
 			case 'like':
 				$replace = OGP_like($params);
 				break;
-
+			
 			case 'comments':
 				$replace = OGP_comments($params);
 				break;

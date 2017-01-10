@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/install_defaults.php                                  |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2012 mystral-kk - geeklog AT mystral-kk DOT net        |
+// | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -26,8 +26,8 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 
-if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== FALSE) {
-    die('This file cannot be used on its own!');
+if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== false) {
+    die('This file can not be used on its own!');
 }
 
 /**
@@ -42,8 +42,8 @@ global $_OGP_DEFAULT;
 
 $_OGP_DEFAULT = array(
 	// Facebook "Like" button
-	'like_send'				=> TRUE,
-	'like_show_faces'		=> TRUE,
+	'like_send'				=> true,
+	'like_show_faces'		=> true,
 	'like_style_layout'		=> 'standard',
 	'like_width'			=> 450,
 	'like_verb'				=> 'like',
@@ -76,7 +76,7 @@ $_OGP_DEFAULT = array(
 function plugin_initconfig_ogp() {
     global $_CONF, $_OGP_CONF, $_OGP_DEFAULT;
 	
-    if (is_array($_OGP_CONF) AND (count($_OGP_CONF) > 0)) {
+    if (is_array($_OGP_CONF) && (count($_OGP_CONF) > 0)) {
         $_OGP_DEFAULT = array_merge($_OGP_DEFAULT, $_OGP_CONF);
     }
 	
@@ -86,32 +86,32 @@ function plugin_initconfig_ogp() {
     if (!$c->group_exists($me)) {
 		$default_img_url = $_CONF['site_admin_url']
 						 . '/plugins/ogp/images/facebook_128.png';
-        $c->add('sg_main', NULL, 'subgroup', 0, 0, NULL, 0, TRUE, $me);
+        $c->add('sg_main', null, 'subgroup', 0, 0, null, 0, true, $me);
 		
-        $c->add('fs_main', NULL, 'fieldset', 0, 0, NULL, 0, TRUE, $me);
-        $c->add('fs_like', NULL, 'fieldset', 0, 1, NULL, 0, TRUE, $me);
-        $c->add('fs_comments', NULL, 'fieldset', 0, 2, NULL, 0, TRUE, $me);
-        $c->add('fb_user_ids', '', 'text', 0, 0, NULL, 10, TRUE, $me);
-        $c->add('fb_app_id', '', 'text', 0, 0, NULL, 20, TRUE, $me);
-        $c->add('fb_default_img_url', $default_img_url, 'text', 0, 0, NULL, 30, TRUE, $me);
+        $c->add('fs_main', null, 'fieldset', 0, 0, null, 0, true, $me);
+        $c->add('fs_like', null, 'fieldset', 0, 1, null, 0, true, $me);
+        $c->add('fs_comments', null, 'fieldset', 0, 2, null, 0, true, $me);
+        $c->add('fb_user_ids', '', 'text', 0, 0, null, 10, true, $me);
+        $c->add('fb_app_id', '', 'text', 0, 0, null, 20, true, $me);
+        $c->add('fb_default_img_url', $default_img_url, 'text', 0, 0, null, 30, true, $me);
 		
 		// Facebook "Like" button
-        $c->add('like_send', $_OGP_DEFAULT['like_send'], 'select', 0, 1, 1, 40, TRUE, $me);
-        $c->add('like_show_faces', $_OGP_DEFAULT['like_show_faces'], 'select', 0, 1, 1, 50, TRUE, $me);
-        $c->add('like_style_layout', $_OGP_DEFAULT['like_style_layout'], 'select', 0, 1, 2, 60, TRUE, $me);
-        $c->add('like_width', $_OGP_DEFAULT['like_width'], 'text', 0, 1, NULL, 70, TRUE, $me);
-        $c->add('like_verb', $_OGP_DEFAULT['like_verb'], 'select', 0, 1, 3, 80, TRUE, $me);
-        $c->add('like_color', $_OGP_DEFAULT['like_color'], 'select', 0, 1, 4, 90, TRUE, $me);
-        $c->add('like_font', $_OGP_DEFAULT['like_font'], 'select', 0, 1, 5, 100, TRUE, $me);
+        $c->add('like_send', $_OGP_DEFAULT['like_send'], 'select', 0, 1, 1, 40, true, $me);
+        $c->add('like_show_faces', $_OGP_DEFAULT['like_show_faces'], 'select', 0, 1, 1, 50, true, $me);
+        $c->add('like_style_layout', $_OGP_DEFAULT['like_style_layout'], 'select', 0, 1, 2, 60, true, $me);
+        $c->add('like_width', $_OGP_DEFAULT['like_width'], 'text', 0, 1, null, 70, true, $me);
+        $c->add('like_verb', $_OGP_DEFAULT['like_verb'], 'select', 0, 1, 3, 80, true, $me);
+        $c->add('like_color', $_OGP_DEFAULT['like_color'], 'select', 0, 1, 4, 90, true, $me);
+        $c->add('like_font', $_OGP_DEFAULT['like_font'], 'select', 0, 1, 5, 100, true, $me);
 		// Facebook "Comments" form
-        $c->add('comments_num_posts', $_OGP_DEFAULT['comments_num_posts'], 'text', 0, 2, NULL, 110, TRUE, $me);
-        $c->add('comments_width', $_OGP_DEFAULT['comments_width'], 'text', 0, 2, NULL, 120, TRUE, $me);
-        $c->add('comments_color', $_OGP_DEFAULT['comments_color'], 'select', 0, 2, 4, 130, TRUE, $me);
+        $c->add('comments_num_posts', $_OGP_DEFAULT['comments_num_posts'], 'text', 0, 2, null, 110, true, $me);
+        $c->add('comments_width', $_OGP_DEFAULT['comments_width'], 'text', 0, 2, null, 120, true, $me);
+        $c->add('comments_color', $_OGP_DEFAULT['comments_color'], 'select', 0, 2, 4, 130, true, $me);
 		
 		// Since v1.1.2
-        $c->add('fs_kinds', NULL, 'fieldset', 0, 3, NULL, 0, TRUE, $me);
-        $c->add('types', $_OGP_DEFAULT['types'], '%text', 0, 3, NULL, 140, TRUE, $me);
+        $c->add('fs_kinds', null, 'fieldset', 0, 3, null, 0, true, $me);
+        $c->add('types', $_OGP_DEFAULT['types'], '%text', 0, 3, null, 140, true, $me);
     }
 	
-    return TRUE;
+    return true;
 }

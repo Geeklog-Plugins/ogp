@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/language/english.php                                  |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2012 mystral-kk - geeklog AT mystral-kk DOT net        |
+// | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------|
@@ -25,8 +25,8 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------|
 
-if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== FALSE) {
-    die('This file cannot be used on its own!');
+if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== false) {
+    die('This file can not be used on its own!');
 }
 
 $LANG_OGP = array(
@@ -75,7 +75,7 @@ $LANG_fs['ogp'] = array(
 // Note: entries 0, 1, 9, and 12 are the same as in $LANG_configselects['Core']
 $LANG_configselects['ogp'] = array(
     0 => array('Yes' => 1, 'No' => 0),
-    1 => array('Yes' => TRUE, 'No' => FALSE),
+    1 => array('Yes' => true, 'No' => false),
 	2 => array(
 			'Standard' => 'standard', 'Button' => 'button_count',
 			'Box' => 'box_count'

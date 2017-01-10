@@ -3,7 +3,7 @@
 // +---------------------------------------------------------------------------+
 // | Open Graph Protocol Plugin for Geeklog - The Ultimate Weblog              |
 // +---------------------------------------------------------------------------+
-// | geeklog/plugins/ogp/language/japanese_utf-8.php                           |
+// | geeklog/plugins/ogp/language/english_utf-8.php                            |
 // +---------------------------------------------------------------------------+
 // | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
 // |                                                                           |
@@ -29,60 +29,60 @@ if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== false) {
     die('This file can not be used on its own!');
 }
 
-$LANG_OGP = array (
-    'plugin'           	=> 'OGP',
-	'admin'		       	=> 'OGP',
-	'fb_ids_not_set'	=> 'OGP: エラー!　最初に「コンフィギュレーション」でFacebookユーザーIDかFacebookアプリケーションIDのいずれかを指定してください。',
-	'fb_appid_not_set'	=> 'OGP: エラー!　FacebookアプリケーションIDがセットされていません。',
+$LANG_OGP = array(
+    'plugin'            => 'OGP',
+	'admin'		        => 'OGP',
+	'fb_ids_not_set'	=> 'OGP: Error!  You have to set either your Facebook User ID(s) or your Facebook App ID first at the configuration panel!',
+	'fb_appid_not_set'	=> 'OGP: Error!  Facebook AppID is not set.',
 );
 
 // Localization of the Admin Configuration UI
 $LANG_configsections['ogp'] = array(
-    'label' => $LANG_OGP['plugin'],
-    'title' => $LANG_OGP['plugin'] . 'の設定',
+    'label' => 'OGP',
+    'title' => 'OGP Configuration'
 );
 
 $LANG_confignames['ogp'] = array(
-	'fb_user_ids'			=> 'FacebookユーザーID',
-	'fb_app_id'				=> 'FacebookアプリケーションID',
-	'fb_default_img_url'	=> 'サイトのデフォルト画像',
-	'like_send'				=> '「送る」ボタンを表示する',
-	'like_show_faces'		=> '顔を表示する',
-	'like_style_layout'		=> 'レイアウト',
-	'like_width'			=> '幅（ピクセル）',
-	'like_verb'				=> '動作',
-	'like_color'			=> '配色',
-	'like_font'				=> 'フォント',
-	'comments_num_posts'	=> 'コメントの表示数',
-	'comments_width'		=> '幅（ピクセル）',
-	'comments_color'		=> '配色',
+	'fb_user_ids'			=> 'Your Facebook User ID(s)',
+	'fb_app_id'				=> 'Your Facebook Application ID',
+	'fb_default_img_url'	=> 'Your site\'s default image',
+	'like_send'				=> 'Show "send" button',
+	'like_show_faces'		=> 'Show faces',
+	'like_style_layout'		=> 'Style layout',
+	'like_width'			=> 'Width (pixels)',
+	'like_verb'				=> 'Action',
+	'like_color'			=> 'Color Scheme',
+	'like_font'				=> 'Font',
+	'comments_num_posts'	=> 'Number of posts',
+	'comments_width'		=> 'Width (pixels)',
+	'comments_color'		=> 'Color Scheme',
 	
 	// Since v1.1.2
-	'types'					=> '種類',
+	'types'					=> 'Types',
 );
 
 $LANG_configsubgroups['ogp'] = array(
-    'sg_main' 				=> '主要設定'
+    'sg_main' => 'Main Settings'
 );
 
 $LANG_fs['ogp'] = array(
-    'fs_main'       		=> $LANG_OGP['plugin'] . 'の主要設定',
-	'fs_like'				=> 'Facebookいいね!ボタンの設定',
-	'fs_comments'			=> 'Facebookコメントの設定',
-	'fs_kinds'				=> 'コンテンツの種類',
+    'fs_main'        		=> 'OGP Main Settings',
+	'fs_like'				=> 'Facebook Like button',
+	'fs_comments'			=> 'Facebook Comments',
+	'fs_kinds'				=> 'Kinds of Contents',
 );
 
 // Note: entries 0, 1, 9, and 12 are the same as in $LANG_configselects['Core']
 $LANG_configselects['ogp'] = array(
-    0 => array('はい' => 1, 'いいえ' => 0),
-    1 => array('はい' => true, 'いいえ' => false),
+    0 => array('Yes' => 1, 'No' => 0),
+    1 => array('Yes' => true, 'No' => false),
 	2 => array(
-			'標準' => 'standard', 'ボタン' => 'button_count',
-			'ボックス' => 'box_count'
+			'Standard' => 'standard', 'Button' => 'button_count',
+			'Box' => 'box_count'
 		),
-	3 => array('いいね!' => 'like', 'おすすめ' => 'recommend'),
-	4 => array('明るい色' => 'light', '暗い色' => 'dark'),
-	5 => array('標準' => '', 'arial' => 'arial', 'lucida grande' => 'lucida grande',
+	3 => array('Like' => 'like', 'Recommend' => 'recommend'),
+	4 => array('Light' => 'light', 'Dark' => 'dark'),
+	5 => array('Default' => '', 'arial' => 'arial', 'lucida grande' => 'lucida grande',
 			'segoe ui' => 'segoe ui', 'tahoma' => 'tahoma',
 			'trebuchet ms' => 'trebuchet ms', 'verdana' => 'verdana',
 		),
