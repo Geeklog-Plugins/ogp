@@ -491,8 +491,9 @@ function plugin_upgrade_ogp() {
 			case '1.1.5':
 			case '1.1.6':
 			case '1.1.7':
+			case '1.1.8':
 				// Does nothing
-				$pi_version = '1.1.8';
+				$pi_version = '1.1.9';
 				break;
 			
 			default:
@@ -555,6 +556,8 @@ function OGP_loadConfig() {
 		
 		if (is_array($temp) && (count($temp) > 0)) {
 			$_OGP_CONF = array_merge($_OGP_CONF, $temp);
+			$_OGP_CONF['fb_app_id'] = trim(@$_OGP_CONF['fb_app_id']);
+			$_OGP_CONF['fb_user_ids'] = trim(@$_OGP_CONF['fb_user_ids']);
 		}
 	}
 }
@@ -653,15 +656,15 @@ function OGP_escValue($str) {
 }
 
 function OGP_isFbUserIdSet() {
-	global $_CONF, $_OGP_CONF;
+	global $_OGP_CONF;
 
-	return (preg_match('/^\s*[0-9]+(\s*,\s*[0-9]+)*\s*$/', $_OGP_CONF['fb_user_ids']) == 1);
+	return !empty($_OGP_CONF['fb_user_ids']);
 }
 
 function OGP_isFbAppIdSet() {
-	global $_CONF, $_OGP_CONF;
+	global $_OGP_CONF;
 
-	return (preg_match('/^\s*[0-9]+\s*$/', $_OGP_CONF['fb_app_id']) == 1);
+	return !empty($_OGP_CONF['fb_app_id']);
 }
 
 function OGP_fixUri($uri) {

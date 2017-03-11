@@ -36,7 +36,7 @@ $_OGP_CONF = array();
 
 // Plugin info
 
-$_OGP_CONF['pi_version'] = '1.1.8';						// Plugin Version
+$_OGP_CONF['pi_version'] = '1.1.9';						// Plugin Version
 $_OGP_CONF['gl_version'] = '1.6.0';						// GL Version plugin for
 $_OGP_CONF['pi_url']     = 'https://mystral-kk.net/';	// Plugin Homepage
 $_OGP_CONF['GROUPS']     = array(
