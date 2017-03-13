@@ -658,13 +658,13 @@ function OGP_escValue($str) {
 function OGP_isFbUserIdSet() {
 	global $_OGP_CONF;
 
-	return !empty($_OGP_CONF['fb_user_ids']);
+	return true;
 }
 
 function OGP_isFbAppIdSet() {
 	global $_OGP_CONF;
 
-	return !empty($_OGP_CONF['fb_app_id']);
+	return true;
 }
 
 function OGP_fixUri($uri) {
