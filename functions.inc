@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/functions.inc                                         |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
+// | Copyright (C) 2011-2018 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -125,7 +125,7 @@ function OGP_replaceTags($content) {
 						COM_errorLog(__FUNCTION__ . ': Recursive call of [staticpage_content:' . $sp_id . '] tag detected.');
 						$sp_content = '';
 					} else {
-						$recursive[$sp_id] = TRUE;
+						$recursive[$sp_id] = true;
 						$sp_content = SP_returnStaticpage($sp_id, 'autotag');
 					}
 
@@ -393,7 +393,7 @@ EOD;
 /**
 * Checks to see if this plugin uses comments
 *
-* @return   boolean TRUE or false
+* @return   boolean true or false
 */
 function plugin_commentsupport_ogp() {
 	return false;
@@ -458,7 +458,7 @@ function plugin_chkVersion_ogp() {
 /**
 * Upgrade the plugin
 *
-* @return   boolean TRUE (= success)
+* @return   boolean true (= success)
 */
 function plugin_upgrade_ogp() {
 	global $_CONF, $_TABLES, $_OGP_CONF;
@@ -477,10 +477,10 @@ function plugin_upgrade_ogp() {
 				require_once dirname(__FILE__) . '/install_defaults.php';
 				
 				$c = config::get_instance();
-				$c->add('fs_kinds', NULL, 'fieldset', 0, 3, NULL, 0, TRUE, 'ogp');
+				$c->add('fs_kinds', null, 'fieldset', 0, 3, null, 0, true, 'ogp');
 				$c->add(
-					'types', $_OGP_DEFAULT['types'], '%text', 0, 3, NULL, 140,
-					TRUE, 'ogp'
+					'types', $_OGP_DEFAULT['types'], '%text', 0, 3, null, 140,
+					true, 'ogp'
 				);
 				$pi_version = '1.1.2';
 				break;
@@ -492,8 +492,9 @@ function plugin_upgrade_ogp() {
 			case '1.1.6':
 			case '1.1.7':
 			case '1.1.8':
+			case '1.1.9';
 				// Does nothing
-				$pi_version = '1.1.9';
+				$pi_version = '1.2.0';
 				break;
 			
 			default:
@@ -764,7 +765,7 @@ function OGP_gerArgs($str) {
 * Checks if the content on the current URL is supported by OGP plugin
 *
 * @param   string  $url
-* @return  boolean TRUE = supported, false = otherwise
+* @return  boolean true = supported, false = otherwise
 */
 function OGP_isSupportedItem($url) {
 	global $_PLUGINS, $_TABLES, $_OGP_CONF;

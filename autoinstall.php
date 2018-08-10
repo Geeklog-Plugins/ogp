@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/autoinstall.php                                       |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
+// | Copyright (C) 2011-2018 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -74,7 +74,7 @@ function plugin_autoinstall_ogp($pi_name) {
 * Load plugin configuration from database
 *
 * @param    string  $pi_name    Plugin name
-* @return   boolean             TRUE on success, otherwise FALSE
+* @return   boolean             true on success, otherwise false
 * @see      plugin_initconfig_ogp
 *
 */

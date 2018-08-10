@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/config.php                                            |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
+// | Copyright (C) 2011-2018 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -36,7 +36,7 @@ $_OGP_CONF = array();
 
 // Plugin info
 
-$_OGP_CONF['pi_version'] = '1.1.9';						// Plugin Version
+$_OGP_CONF['pi_version'] = '1.2.0';						// Plugin Version
 $_OGP_CONF['gl_version'] = '1.6.0';						// GL Version plugin for
 $_OGP_CONF['pi_url']     = 'https://mystral-kk.net/';	// Plugin Homepage
 $_OGP_CONF['GROUPS']     = array(

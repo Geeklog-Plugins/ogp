@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/language/japanese_utf-8.php                           |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
+// | Copyright (C) 2011-2018 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------|

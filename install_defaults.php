@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/install_defaults.php                                  |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2017 mystral-kk - geeklog AT mystral-kk DOT net        |
+// | Copyright (C) 2011-2018 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -57,9 +57,9 @@ $_OGP_DEFAULT = array(
 	
 	// Types of contents
 	'types'					=> array(
-									'article', 'staticpages', 'calendar',
-									'calendarjp', 'links', 'polls', 'filemgmt',
-									'downloads',
+								'article', 'staticpages', 'calendar',
+								'calendarjp', 'links', 'polls', 'filemgmt',
+								'downloads',
 	),
 );
 
