@@ -67,23 +67,12 @@
 		(before) <code>&lt;html{html_attribute}{xmlns}&gt;</code><br>
 		(after) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
 		</li>
-		<li>If you are using Geeklog prior to version 1.8.0, add the followingcode to your footer.thtml, just before the &lt;/body&gt; tag.<br>
-		<code>
-		&lt;div id="fb-root"&gt;&lt;/div&gt;
-&lt;script&gt;
-  window.fbAsyncInit = function() {
-	FB.init({appId: '<strong>Your Facebook App ID</strong>', status: true, cookie: true,
-			 xfbml: true, channelURL: '<strong>Your Site URL</strong>/admin/plugins/ogp/channel.php'});
-  };
-  (function() {
-	var e = document.createElement('script'); e.async = true;
-	e.src = document.location.protocol +
-	  '//connect.facebook.net/<strong>en_US</strong>/all.js';
-	document.getElementById('fb-root').appendChild(e);
-  }());
-&lt;/script&gt;
-		</code>
-		<p>Besides, replace <strong>Your Facebook App ID</strong> and <strong>Your Site URL</strong> with suitable values.  If you want to use this plugin other than English, then change <strong>en_US</strong> into the locale you want.  For available options, refer to <a href="https://developers.facebook.com/docs/internationalization">this web page</a>.  When you are using Geeklog-1.8.0 or later, this step is unnecessary.</p></li>
+		<li><strong>For Geeklog 1.8.0 or older</strong>, add the following code to your footer.thtml, just before the &lt;/body&gt; tag.<br>
+		<pre>
+&lt;div id="fb-root"&gt;&lt;/div&gt;
+&lt;script src="https://connect.facebook.net/<strong style="color: magenta;">en_US</strong>/sdk.js#xfbml=1&amp;version=v6.0&amp;appId=<strong style="color: red;">Your Facebook App ID</strong>"&gt;&lt;/script&gt;
+</pre>
+		<p>Replace <strong style="color: red;">Your Facebook App ID</strong> with a corresponding value.  If you want to use this plugin other than English, then change <strong style="color: magenta;">en_US</strong> into the locale you want.  For available options, refer to <a href="https://developers.facebook.com/docs/internationalization">this web page</a>.</p></li>
 		<li>Log in to your Geeklog as a root user, go to the plugin editor and install OGP plugin.</li>
 		<li><strong>IMPORTANT</strong>: Go to Configuration Panel and set either your Facebook User ID(s) or your Facebook Applicatin ID.  If you are not going to use Facebook Like button or Fcebook comments, then you don't have to set the latter.  After setting the two items, you have Like button and Facebook comments available as autotags (<strong>[ogp:like]</strong> and <strong>[ogp:comments]</strong> respectively).</li>
 		<li>If you want to show Like button or Facebook comments without embedding the above autotags into articles, then you have to add template variables to templates.  In featuredarticletext.thtml ("featuredstorytext.thtml" in older versions) and articletext.thtml ("storytext.thtml" in older versions), you have to add <strong>{ogp_like}</strong> (for like button) and <strong>{ogp_comments}</strong> (for Facebook comments).</li>

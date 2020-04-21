@@ -65,23 +65,12 @@
 		(変更前) <code>&lt;html{html_attribute}{xmlns}&gt;</code><br><br>
 		(変更後) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
 		</li>
-		<li>Geeklog-1.8.0よりも古いバージョンを使用している場合は、次のコードを上記header.thtmlと同じディレクトリ内にあるfooter.thtmlの&lt;/body&gt;タグの直前に追加します。<br>
-		<code>
-		&lt;div id="fb-root"&gt;&lt;/div&gt;
-&lt;script&gt;
-  window.fbAsyncInit = function() {
-	FB.init({appId: '<strong>FacebookアプリケーションID</strong>', status: true, cookie: true,
-			 xfbml: true, channelURL: '<strong>サイトのURL</strong>/admin/plugins/ogp/channel.php'});
-  };
-  (function() {
-	var e = document.createElement('script'); e.async = true;
-	e.src = document.location.protocol +
-	  '//connect.facebook.net/<strong>ja_JP</strong>/all.js';
-	document.getElementById('fb-root').appendChild(e);
-  }());
-&lt;/script&gt;
-		</code>
-		<p><strong>FacebookアプリケーションID</strong>、<strong>サイトのURL</strong>は適切な値に置き換えます。日本語以外に対応するには、<strong>ja_JP</strong>の部分を希望するロケールに変更します。対応しているロケールは<a href="https://developers.facebook.com/docs/internationalization">こちらのWebページ</a>を参照してください。なお、Geeklog-1.8.0以降の場合、この作業は不要です。</p></li>
+		<li><strong>Geeklog-1.8.0よりも古いバージョン</strong>を使用している場合は、次のコードを上記header.thtmlと同じディレクトリ内にあるfooter.thtmlの&lt;/body&gt;タグの直前に追加します。<br>
+		<pre>
+&lt;div id="fb-root"&gt;&lt;/div&gt;
+&lt;script src="https://connect.facebook.net/<strong style="color: magenta;">ja_JP</strong>/sdk.js#xfbml=1&amp;version=v6.0&amp;appId=<strong style="color: red;">FacebookアプリケーションID</strong>"&gt;&lt;/script&gt;
+</pre>
+		<p><strong style="color: red;">FacebookアプリケーションID</strong>は適切な値に置き換えます。日本語以外に対応するには、<strong style="color: magenta;">ja_JP</strong>の部分を希望するロケールに変更します。対応しているロケールは<a href="https://developers.facebook.com/docs/internationalization">こちらのWebページ</a>を参照してください。</p></li>
 		<li>Rootユーザーとしてログインし、プラグインエディタからインストールを実行します。失敗した場合には、エラーログ（error.log）を調べます。</li>
 		<li><strong>重要</strong>: コンフィギュレーション &gt; OGPでFacebookユーザーIDとFacebookアプリケーションIDを指定します。「いいね!」ボタンやコメント機能を使用しない場合、後者の設定は不要です。設定した場合は、この時点で「いいね!」ボタンやコメント機能は自動タグとして利用可能になっています（それぞれ、<strong>[ogp:like]</strong>と<strong>[ogp:comments]</strong>）。</li>
 		<li>「いいね!」ボタンやコメント機能が記事で自動的に表示されるようにするには、テンプレートファイルに追加します。上記header.thtmlと同じディレクトリ内にあるfeaturedarticletext.thtml(旧バージョンでは "featuredstorytext.thtml")とarticletext.thtml(旧バージョンでは "storytext.thtml")にテンプレート変数を追加します。「いいね!」ボタンは<strong>{ogp_like}</strong>、コメント機能は<strong>{ogp_comments}</strong>です。</li>
