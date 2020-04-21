@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | public_html/admin/plugins/ogp/index.php                                   |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2018 mystral-kk - mystralkk AT gmail DOT com           |
+// | Copyright (C) 2011-2020 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -30,31 +30,29 @@ require_once '../../../lib-common.php';
 
 // Only let admin users access this page
 if (!SEC_hasRights('ogp.edit')) {
-	// Someone is trying to illegally access this page
-	COM_errorLog("Someone has tried to illegally access the ogp Admin page.  User id: {$_USER['uid']}, Username: {$_USER['username']}, IP: {$_SERVER['REMOTE_ADDR']}", 1);
-	$content = COM_startBlock(OGP_esc($LANG_ACCESS['accessdenied']))
-			 . OGP_esc($LANG_ACCESS['plugin_access_denied_msg'])
-			 . COM_endBlock();
-	
-	if (is_callable('COM_createHTMLDocument')) {
-		$display = COM_createHTMLDocument($content);
-	} else {
-		$display = COM_siteHeader()
-				 . $content
-				 . COM_siteFooter();
-	}
-	
-	if (is_callable('COM_output')) {
-		COM_output($display);
-	} else {
-		echo $display;
-	}
+    // Someone is trying to illegally access this page
+    COM_errorLog("Someone has tried to illegally access the ogp Admin page.  User id: {$_USER['uid']}, Username: {$_USER['username']}, IP: {$_SERVER['REMOTE_ADDR']}", 1);
+    $content = COM_startBlock(OGP_esc($LANG_ACCESS['accessdenied']))
+             . OGP_esc($LANG_ACCESS['plugin_access_denied_msg'])
+             . COM_endBlock();
+    
+    if (is_callable('COM_createHTMLDocument')) {
+        $display = COM_createHTMLDocument($content);
+    } else {
+        $display = COM_siteHeader() . $content . COM_siteFooter();
+    }
+    
+    if (is_callable('COM_output')) {
+        COM_output($display);
+    } else {
+        echo $display;
+    }
 
-	exit;
+    exit;
 }
 
 if (is_callable('COM_redirect')) {
-	COM_redirect($_CONF['site_admin_url'] . '/configuration.php');
+    COM_redirect($_CONF['site_admin_url'] . '/configuration.php');
 } else {
-	echo COM_refresh($_CONF['site_admin_url'] . '/configuration.php');
+    echo COM_refresh($_CONF['site_admin_url'] . '/configuration.php');
 }

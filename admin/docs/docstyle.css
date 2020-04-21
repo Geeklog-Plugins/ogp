@@ -147,3 +147,9 @@ a.wikipedia {
   font-weight: bold;
   background-color: #ff0033;
 }
+
+.confirmed {
+  color: white;
+  font-weight: bold;
+  background-color: green;
+}

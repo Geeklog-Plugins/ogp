@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/autoinstall.php                                       |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2018 mystral-kk - mystralkk AT gmail DOT com           |
+// | Copyright (C) 2011-2020 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -27,10 +27,10 @@
 // +---------------------------------------------------------------------------+
 
 if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== false) {
-	die('This file can not be used on its own!');
+    die('This file can not be used on its own!');
 }
 
-require_once dirname(__FILE__) . '/install_defaults.php';
+require_once __DIR__ . '/install_defaults.php';
 
 // Open Graph Protocol Plugin Main Settings
 $_CONF_VALIDATE['ogp']['fb_user_ids']        = array('rule' => 'stringOrEmpty');
@@ -40,5 +40,5 @@ $_CONF_VALIDATE['ogp']['like_width']         = array('rule' => 'numeric');
 $_CONF_VALIDATE['ogp']['comments_num_posts'] = array('rule' => 'numeric');
 $_CONF_VALIDATE['ogp']['comments_width']     = array('rule' => 'numeric');
 $_CONF_VALIDATE['ogp']['types']              = array(
-	'rule' => array('inList', $_OGP_DEFAULT['types'])
+    'rule' => array('inList', $_OGP_DEFAULT['types'])
 );

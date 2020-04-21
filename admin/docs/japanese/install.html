@@ -1,8 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="../docstyle.css">
 	<title>Geeklog OGP(Open Graph Protocol)プラグイン</title>
 </head>
@@ -17,7 +16,7 @@
 		</tr>
 		<tr>
 			<th>最新バージョン</th>
-			<td>1.2.0 (2018-08-10)</td>
+			<td>1.2.1 (2020-04-21)</td>
 		</tr>
 		<tr>
 			<th>システム要件</th>
@@ -82,7 +81,7 @@
   }());
 &lt;/script&gt;
 		</code>
-		<p><strong>FacebookアプリケーションID</strong>、<strong>サイトのURL</strong>は適切な値に置き換えます。日本語以外に対応するには、<strong>ja_JP</strong>の部分を希望するロケールに変更します。対応しているロケールは<a href="http://www.facebook.com/translations/FacebookLocales.xml">こちらのXMLファイル</a>を参照してください。なお、Geeklog-1.8.0以降の場合、この作業は不要です。</p></li>
+		<p><strong>FacebookアプリケーションID</strong>、<strong>サイトのURL</strong>は適切な値に置き換えます。日本語以外に対応するには、<strong>ja_JP</strong>の部分を希望するロケールに変更します。対応しているロケールは<a href="https://developers.facebook.com/docs/internationalization">こちらのWebページ</a>を参照してください。なお、Geeklog-1.8.0以降の場合、この作業は不要です。</p></li>
 		<li>Rootユーザーとしてログインし、プラグインエディタからインストールを実行します。失敗した場合には、エラーログ（error.log）を調べます。</li>
 		<li><strong>重要</strong>: コンフィギュレーション &gt; OGPでFacebookユーザーIDとFacebookアプリケーションIDを指定します。「いいね!」ボタンやコメント機能を使用しない場合、後者の設定は不要です。設定した場合は、この時点で「いいね!」ボタンやコメント機能は自動タグとして利用可能になっています（それぞれ、<strong>[ogp:like]</strong>と<strong>[ogp:comments]</strong>）。</li>
 		<li>「いいね!」ボタンやコメント機能が記事で自動的に表示されるようにするには、テンプレートファイルに追加します。上記header.thtmlと同じディレクトリ内にあるfeaturedstorytext.thtmlとstorytext.thtmlにテンプレート変数を追加します。「いいね!」ボタンは<strong>{ogp_like}</strong>、コメント機能は<strong>{ogp_comments}</strong>です。</li>
@@ -220,6 +219,15 @@ $retval = $poll-&gt;finish($poll-&gt;parse('output', 'block')) . LB;<br>
 			<th>バージョン</th>
 			<th>日付(YYYY-MM-DD)</th>
 			<th>詳細</th>
+		</tr>
+		<tr>
+			<td>1.2.1</td>
+			<td>2020-04-21</td>
+			<td>
+				<span class="fixed">&nbsp;修正 </span>&nbsp; URLルーティングが有効な状態でも機能するように修正しました。<br>
+				<span class="fixed">&nbsp;修正 </span>&nbsp; Geeklog 2.2.1sr1で動作するようにしました。<br>
+				<span class="fixed">&nbsp;修正 </span>&nbsp; Facebookで受け入れられるように既定の画像ファイルを更新しました。このファイルは <a href="http://www.iconarchive.com/show/variations-3-icons-by-guillendesign/Default-Icon-icon.html">http://www.iconarchive.com/show/variations-3-icons-by-guillendesign/Default-Icon-icon.html</a> で提供されています。ライセンスは、<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC Attribution-Noncommercial-No Derivate 4.0</a> です。
+			</td>
 		</tr>
 		<tr>
 			<td>1.2.0</td>

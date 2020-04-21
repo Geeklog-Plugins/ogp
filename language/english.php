@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/language/english.php                                  |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2018 mystral-kk - mystralkk AT gmail DOT com           |
+// | Copyright (C) 2011-2020 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------|
@@ -31,9 +31,9 @@ if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== false) {
 
 $LANG_OGP = array(
     'plugin'            => 'OGP',
-	'admin'		        => 'OGP',
-	'fb_ids_not_set'	=> 'OGP: Error!  You have to set either your Facebook User ID(s) or your Facebook App ID first at the configuration panel!',
-	'fb_appid_not_set'	=> 'OGP: Error!  Facebook AppID is not set.',
+    'admin'             => 'OGP',
+    'fb_ids_not_set'    => 'OGP: Error!  You have to set either your Facebook User ID(s) or your Facebook App ID first at the configuration panel!',
+    'fb_appid_not_set'  => 'OGP: Error!  Facebook AppID is not set.',
 );
 
 // Localization of the Admin Configuration UI
@@ -43,22 +43,22 @@ $LANG_configsections['ogp'] = array(
 );
 
 $LANG_confignames['ogp'] = array(
-	'fb_user_ids'			=> 'Your Facebook User ID(s)',
-	'fb_app_id'				=> 'Your Facebook Application ID',
-	'fb_default_img_url'	=> 'Your site\'s default image',
-	'like_send'				=> 'Show "send" button',
-	'like_show_faces'		=> 'Show faces',
-	'like_style_layout'		=> 'Style layout',
-	'like_width'			=> 'Width (pixels)',
-	'like_verb'				=> 'Action',
-	'like_color'			=> 'Color Scheme',
-	'like_font'				=> 'Font',
-	'comments_num_posts'	=> 'Number of posts',
-	'comments_width'		=> 'Width (pixels)',
-	'comments_color'		=> 'Color Scheme',
-	
-	// Since v1.1.2
-	'types'					=> 'Types',
+    'fb_user_ids'           => 'Your Facebook User ID(s)',
+    'fb_app_id'             => 'Your Facebook Application ID',
+    'fb_default_img_url'    => 'Your site\'s default image',
+    'like_send'             => 'Show "send" button',
+    'like_show_faces'       => 'Show faces',
+    'like_style_layout'     => 'Style layout',
+    'like_width'            => 'Width (pixels)',
+    'like_verb'             => 'Action',
+    'like_color'            => 'Color Scheme',
+    'like_font'             => 'Font',
+    'comments_num_posts'    => 'Number of posts',
+    'comments_width'        => 'Width (pixels)',
+    'comments_color'        => 'Color Scheme',
+    
+    // Since v1.1.2
+    'types'                 => 'Types',
 );
 
 $LANG_configsubgroups['ogp'] = array(
@@ -66,24 +66,24 @@ $LANG_configsubgroups['ogp'] = array(
 );
 
 $LANG_fs['ogp'] = array(
-    'fs_main'        		=> 'OGP Main Settings',
-	'fs_like'				=> 'Facebook Like button',
-	'fs_comments'			=> 'Facebook Comments',
-	'fs_kinds'				=> 'Kinds of Contents',
+    'fs_main'               => 'OGP Main Settings',
+    'fs_like'               => 'Facebook Like button',
+    'fs_comments'           => 'Facebook Comments',
+    'fs_kinds'              => 'Kinds of Contents',
 );
 
 // Note: entries 0, 1, 9, and 12 are the same as in $LANG_configselects['Core']
 $LANG_configselects['ogp'] = array(
     0 => array('Yes' => 1, 'No' => 0),
     1 => array('Yes' => true, 'No' => false),
-	2 => array(
-			'Standard' => 'standard', 'Button' => 'button_count',
-			'Box' => 'box_count'
-		),
-	3 => array('Like' => 'like', 'Recommend' => 'recommend'),
-	4 => array('Light' => 'light', 'Dark' => 'dark'),
-	5 => array('Default' => '', 'arial' => 'arial', 'lucida grande' => 'lucida grande',
-			'segoe ui' => 'segoe ui', 'tahoma' => 'tahoma',
-			'trebuchet ms' => 'trebuchet ms', 'verdana' => 'verdana',
-		),
+    2 => array(
+            'Standard' => 'standard', 'Button' => 'button_count',
+            'Box' => 'box_count'
+        ),
+    3 => array('Like' => 'like', 'Recommend' => 'recommend'),
+    4 => array('Light' => 'light', 'Dark' => 'dark'),
+    5 => array('Default' => '', 'arial' => 'arial', 'lucida grande' => 'lucida grande',
+            'segoe ui' => 'segoe ui', 'tahoma' => 'tahoma',
+            'trebuchet ms' => 'trebuchet ms', 'verdana' => 'verdana',
+        ),
 );

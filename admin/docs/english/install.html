@@ -1,8 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="../docstyle.css">
 	<title>Geeklog Open Graph Protocol plugin</title>
 </head>
@@ -17,7 +16,7 @@
 		</tr>
 		<tr>
 			<th>Latest version</th>
-			<td>1.2.0 (2018-08-10)</td>
+			<td>1.2.1 (2020-04-21)</td>
 		</tr>
 		<tr>
 			<th>System requirements</th>
@@ -82,7 +81,7 @@
   }());
 &lt;/script&gt;
 		</code>
-		<p>Replace <strong>Your Facebook App ID</strong> and <strong>Your Site URL</strong> with suitable values.  If you want to use this plugin other than English, then change <strong>en_US</strong> into the locale you want.  For available options, refer to <a href="http://www.facebook.com/translations/FacebookLocales.xml">this XML file</a>.  When you are using Geeklog-1.8.0 or later, this step is unnecessary.</p></li>
+		<p>Replace <strong>Your Facebook App ID</strong> and <strong>Your Site URL</strong> with suitable values.  If you want to use this plugin other than English, then change <strong>en_US</strong> into the locale you want.  For available options, refer to <a href="https://developers.facebook.com/docs/internationalization">this web page</a>.  When you are using Geeklog-1.8.0 or later, this step is unnecessary.</p></li>
 		<li>Log in to your Geeklog as a root user, go to the plugin editor and install OGP plugin.</li>
 		<li><strong>IMPORTANT</strong>: Go to Configuration Panel and set either your Facebook User ID(s) or your Facebook Applicatin ID.  If you are not going to use Facebook Like button or Fcebook comments, then you don't have to set the latter.  After setting the two items, you have Like button and Facebook comments available as autotags (<strong>[ogp:like]</strong> and <strong>[ogp:comments]</strong> respectively).</li>
 		<li>If you want to show Like button or Facebook comments without embedding the above autotags into articles, then you have to add template variables to templates.  In featuredstorytext.thtml and storytext.thtml, you have to add <strong>{ogp_like}</strong> (for like button) and <strong>{ogp_comments}</strong> (for Facebook comments).</li>
@@ -192,10 +191,19 @@ $retval = $poll-&gt;finish($poll-&gt;parse('output', 'block')) . LB;<br>
 			<th>Detail</th>
 		</tr>
 		<tr>
+			<td>1.2.1</td>
+			<td>2020-04-21</td>
+			<td>
+				<span class="fixed">&nbsp;Fixed </span>&nbsp; to work with the URL Routing feature enabled.<br>
+				<span class="fixed">&nbsp;Fixed </span>&nbsp; to work with Geeklog 2.2.1sr1<br>
+				<span class="fixed">&nbsp;Fixed </span>&nbsp; to use a default image large enough to be accepted by Facebook; the default image is provided at <a href="http://www.iconarchive.com/show/variations-3-icons-by-guillendesign/Default-Icon-icon.html">http://www.iconarchive.com/show/variations-3-icons-by-guillendesign/Default-Icon-icon.html</a> under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC Attribution-Noncommercial-No Derivate 4.0</a> license.
+			</td>
+		</tr>
+		<tr>
 			<td>1.2.0</td>
 			<td>2018-08-10</td>
 			<td>
-				<span class="fixed">&nbsp;Confirmed </span>&nbsp; that the OGP plugin works with Geeklog 2.2.0.
+				<span class="confirmed">&nbsp;Confirmed </span>&nbsp; that the OGP plugin works with Geeklog 2.2.0.
 			</td>
 		</tr>
 		<tr>

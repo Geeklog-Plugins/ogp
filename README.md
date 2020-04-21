@@ -9,7 +9,7 @@ calendar events, link categories, poll items and download files.  You can set th
 Facebook Like button and/or Facebook comments in Configuration.
 
 ## System requirements
-- Geeklog-1.6.0 or newer (compatible with Geeklog-2.2.0)
+- Geeklog-1.6.0 or newer (compatible with Geeklog-2.2.1sr1)
 - PHP-5.0.0 or newer
 
 ## Before installation

@@ -36,9 +36,9 @@ $_OGP_CONF = array();
 
 // Plugin info
 
-$_OGP_CONF['pi_version'] = '1.2.0';						// Plugin Version
-$_OGP_CONF['gl_version'] = '1.6.0';						// GL Version plugin for
-$_OGP_CONF['pi_url']     = 'https://mystral-kk.net/';	// Plugin Homepage
+$_OGP_CONF['pi_version'] = '1.2.1';										// Plugin Version
+$_OGP_CONF['gl_version'] = '1.6.0';										// GL Version plugin for
+$_OGP_CONF['pi_url']     = 'https://github.com/Geeklog-Plugins/ogp';	// Plugin Homepage
 $_OGP_CONF['GROUPS']     = array(
 		'Open Graph Protocol Admin' => 'Users in this group can administer the Open Graph Protocol plugin',
 );
@@ -56,6 +56,7 @@ $_OGP_CONF['FONTS'] = array(
 	'verdana',
 );
 
+// @see https://developers.facebook.com/docs/internationalization
 $_OGP_CONF['LOCALE_MAPPINGS'] = array(
 //	Geeklog language name	=> Facebook locale
 	'afrikaans'				=> 'af_ZA',
@@ -82,7 +83,7 @@ $_OGP_CONF['LOCALE_MAPPINGS'] = array(
 	'italian'				=> 'it_IT',
 	'japanese'				=> 'ja_JP',
 	'korean'				=> 'ko_KR',
-	'norwegian'				=> 'nb_NO',	// OR 'nn_NO'?
+	'norwegian'				=> 'nb_NO',	// Bokmål; for Nynorsk, use 'nn_NO' instead
 	'polish'				=> 'pl_PL',
 	'portuguese'			=> 'pt_PT',
 	'portuguese_brazil'		=> 'pt_BR',
