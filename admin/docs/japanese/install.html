@@ -61,7 +61,7 @@
 		<li><span class="admin">&lt;admin&gt;</span>/pluginsディレクトリの下にogpという名前のディレクトリを作ります。</li>
 		<li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/public_htmlディレクトリに移動し、その内容をを2.で作成した <span class="public">&lt;public_html&gt;</span>/ogpディレクトリにコピーします。</li>
 		<li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/adminディレクトリに移動し、その内容を3.で作成した <span class="admin">&lt;admin&gt;</span>/plugins/ogpディレクトリにコピーします。</li>
-		<li><span class="public">&lt;public_html&gt;</span>/layout/使用するテーマ/header.thtmlを修正します。<br><br>
+		<li><span class="public">&lt;public_html&gt;</span>/layout/使用するテーマ/index.thtmlを修正します(旧バージョンでは "header.thtml")。<br><br>
 		(変更前) <code>&lt;html{html_attribute}{xmlns}&gt;</code><br><br>
 		(変更後) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
 		</li>
@@ -84,7 +84,7 @@
 		<p><strong>FacebookアプリケーションID</strong>、<strong>サイトのURL</strong>は適切な値に置き換えます。日本語以外に対応するには、<strong>ja_JP</strong>の部分を希望するロケールに変更します。対応しているロケールは<a href="https://developers.facebook.com/docs/internationalization">こちらのWebページ</a>を参照してください。なお、Geeklog-1.8.0以降の場合、この作業は不要です。</p></li>
 		<li>Rootユーザーとしてログインし、プラグインエディタからインストールを実行します。失敗した場合には、エラーログ（error.log）を調べます。</li>
 		<li><strong>重要</strong>: コンフィギュレーション &gt; OGPでFacebookユーザーIDとFacebookアプリケーションIDを指定します。「いいね!」ボタンやコメント機能を使用しない場合、後者の設定は不要です。設定した場合は、この時点で「いいね!」ボタンやコメント機能は自動タグとして利用可能になっています（それぞれ、<strong>[ogp:like]</strong>と<strong>[ogp:comments]</strong>）。</li>
-		<li>「いいね!」ボタンやコメント機能が記事で自動的に表示されるようにするには、テンプレートファイルに追加します。上記header.thtmlと同じディレクトリ内にあるfeaturedstorytext.thtmlとstorytext.thtmlにテンプレート変数を追加します。「いいね!」ボタンは<strong>{ogp_like}</strong>、コメント機能は<strong>{ogp_comments}</strong>です。</li>
+		<li>「いいね!」ボタンやコメント機能が記事で自動的に表示されるようにするには、テンプレートファイルに追加します。上記header.thtmlと同じディレクトリ内にあるfeaturedarticletext.thtml(旧バージョンでは "featuredstorytext.thtml")とarticletext.thtml(旧バージョンでは "storytext.thtml")にテンプレート変数を追加します。「いいね!」ボタンは<strong>{ogp_like}</strong>、コメント機能は<strong>{ogp_comments}</strong>です。</li>
 		<li>カレンダープラグイン(v1.1.2)では以下の2つの手順を踏む必要があります。<br>
 			<ol>
 				<li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/calendar/templates/eventdetails.thtmlの一番下の部分に、<strong>{ogp_like}</strong>や<strong>{ogp_comments}</strong>を追加する。</li>

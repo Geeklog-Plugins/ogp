@@ -56,12 +56,14 @@
 	</ul>
 
 	<ol>
-		<li>Uncompress the ogp plugin archive while in the <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins directory.  The archive will create a directory called ogp in the plugins directory.</li>
-		<li>Under your <span class="public">&lt;public_html&gt;</span> directory, create a directory called ogp.</li>
-		<li>Under your <span class="admin">&lt;admin&gt;</span>/plugins/ directory, create a directory called ogp.</li>
-		<li>Change to your <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/public_html directory and copy the files in the directory to the <span class="public">&lt;public_html&gt;</span>/ogp directory your created in step 2.</li>
-		<li>Change to your <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp/admin directory and copy the files in the directory to the <span class="admin">&lt;admin&gt;</span>/plugins/ogp directory your created in step 3.</li>
-		<li>Change <span class="public">&lt;public_html&gt;</span>/layout/your_theme/header.thtml.<br>
+		<li>Under your <span class="geeklog">&lt;geeklog_dir&gt;</span>, create a directory called <code>ogp</code>.</li>
+		<li>Under your <span class="public">&lt;public_html&gt;</span> directory, create a directory called <code>ogp</code>.</li>
+		<li>Under your <span class="admin">&lt;admin&gt;</span>/plugins/ directory, create a directory called <code>ogp</code>.</li>
+		<li>Uncompress the ogp plugin archive.  The archive will create a directory called <code>ogp-x.y.z</code>, where x.y.x is a plugin version.  Change the current dir to <code>ogp-x.y.z</code>.  In the directory, you will find the directory with the same name.  Change the current durectory again.</li>
+		<li>Copy all files under <code>ogp-x.y.z/ogp-x.y.z/public_html/</code> directory to <span class="public">&lt;public_html&gt;</span>/ogp directory.</li>
+		<li>Copy all files under <code>ogp-x.y.z/ogp-x.y.z/admin/</code> directory to <span class="admin">&lt;admin&gt;</span>/plugins/ogp directory.</li>
+		<li>Copy all files under <code>ogp-x.y.z/ogp-x.y.z/</code> directory <strong>EXCEPT public_html and admin</strong> to <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/ogp directory.</li>
+		<li>Change <span class="public">&lt;public_html&gt;</span>/layout/your_theme/index.thtml.  In older versions, the file was header.thtml.<br>
 		(before) <code>&lt;html{html_attribute}{xmlns}&gt;</code><br>
 		(after) <code>&lt;html{html_attribute}{xmlns} <strong>xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://ogp.me/ns#"</strong>&gt;</code>
 		</li>
@@ -81,10 +83,10 @@
   }());
 &lt;/script&gt;
 		</code>
-		<p>Replace <strong>Your Facebook App ID</strong> and <strong>Your Site URL</strong> with suitable values.  If you want to use this plugin other than English, then change <strong>en_US</strong> into the locale you want.  For available options, refer to <a href="https://developers.facebook.com/docs/internationalization">this web page</a>.  When you are using Geeklog-1.8.0 or later, this step is unnecessary.</p></li>
+		<p>Besides, replace <strong>Your Facebook App ID</strong> and <strong>Your Site URL</strong> with suitable values.  If you want to use this plugin other than English, then change <strong>en_US</strong> into the locale you want.  For available options, refer to <a href="https://developers.facebook.com/docs/internationalization">this web page</a>.  When you are using Geeklog-1.8.0 or later, this step is unnecessary.</p></li>
 		<li>Log in to your Geeklog as a root user, go to the plugin editor and install OGP plugin.</li>
 		<li><strong>IMPORTANT</strong>: Go to Configuration Panel and set either your Facebook User ID(s) or your Facebook Applicatin ID.  If you are not going to use Facebook Like button or Fcebook comments, then you don't have to set the latter.  After setting the two items, you have Like button and Facebook comments available as autotags (<strong>[ogp:like]</strong> and <strong>[ogp:comments]</strong> respectively).</li>
-		<li>If you want to show Like button or Facebook comments without embedding the above autotags into articles, then you have to add template variables to templates.  In featuredstorytext.thtml and storytext.thtml, you have to add <strong>{ogp_like}</strong> (for like button) and <strong>{ogp_comments}</strong> (for Facebook comments).</li>
+		<li>If you want to show Like button or Facebook comments without embedding the above autotags into articles, then you have to add template variables to templates.  In featuredarticletext.thtml ("featuredstorytext.thtml" in older versions) and articletext.thtml ("storytext.thtml" in older versions), you have to add <strong>{ogp_like}</strong> (for like button) and <strong>{ogp_comments}</strong> (for Facebook comments).</li>
 		<li>If you want to show Like button or Facebook comments with the calendar plugin(v1.1.2), you have to take the two following steps:<br>
 			<ol>
 				<li>At the bottom of <span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/calendar/templates/eventdetails.thtml, add <strong>{ogp_like}</strong> and/or <strong>{ogp_comments}</strong> template variables.</li>
