@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/functions.inc                                         |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2020 mystral-kk - mystralkk AT gmail DOT com           |
+// | Copyright (C) 2011-2022 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -480,12 +480,13 @@ function plugin_upgrade_ogp() {
             case '1.1.8':
             case '1.1.9';
             case '1.2.0':
+            case '1.2.1':
                 $defaultImageUrl = $_CONF['site_admin_url'] . '/plugins/ogp/images/default.png';
                 $c = config::get_instance();
                 $c->set('fb_default_img_url', $defaultImageUrl, 'ogp');
 
                 // Does nothing
-                $pi_version = '1.2.1';
+                $pi_version = '1.2.2';
                 break;
 
             default:
@@ -524,7 +525,7 @@ function plugin_autouninstall_ogp() {
         // give the full name of the group, as in the db
         'groups' => array('Open Graph Protocol Admin'),
         // give the full name of the feature, as in the db
-        'features' => $_OGP_CONF['FEATURES'],
+        'features' => array_keys($_OGP_CONF['FEATURES']),
         // give the full name of the block, including 'phpblock_', etc
         'php_blocks' => array(),
         // give all vars with their name

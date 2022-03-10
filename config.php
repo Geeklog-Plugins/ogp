@@ -5,7 +5,7 @@
 // +---------------------------------------------------------------------------+
 // | geeklog/plugins/ogp/config.php                                            |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2011-2018 mystral-kk - mystralkk AT gmail DOT com           |
+// | Copyright (C) 2011-2022 mystral-kk - mystralkk AT gmail DOT com           |
 // |                                                                           |
 // | Constructed with the Universal Plugin                                     |
 // +---------------------------------------------------------------------------+
@@ -36,7 +36,7 @@ $_OGP_CONF = array();
 
 // Plugin info
 
-$_OGP_CONF['pi_version'] = '1.2.1';										// Plugin Version
+$_OGP_CONF['pi_version'] = '1.2.2';										// Plugin Version
 $_OGP_CONF['gl_version'] = '1.6.0';										// GL Version plugin for
 $_OGP_CONF['pi_url']     = 'https://github.com/Geeklog-Plugins/ogp';	// Plugin Homepage
 $_OGP_CONF['GROUPS']     = array(
@@ -83,7 +83,7 @@ $_OGP_CONF['LOCALE_MAPPINGS'] = array(
 	'italian'				=> 'it_IT',
 	'japanese'				=> 'ja_JP',
 	'korean'				=> 'ko_KR',
-	'norwegian'				=> 'nb_NO',	// Bokmål; for Nynorsk, use 'nn_NO' instead
+	'norwegian'				=> 'nb_NO',
 	'polish'				=> 'pl_PL',
 	'portuguese'			=> 'pt_PT',
 	'portuguese_brazil'		=> 'pt_BR',
