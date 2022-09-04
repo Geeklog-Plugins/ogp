@@ -36,7 +36,7 @@ $_OGP_CONF = array();
 
 // Plugin info
 
-$_OGP_CONF['pi_version'] = '1.2.2';										// Plugin Version
+$_OGP_CONF['pi_version'] = '1.2.3';										// Plugin Version
 $_OGP_CONF['gl_version'] = '1.6.0';										// GL Version plugin for
 $_OGP_CONF['pi_url']     = 'https://github.com/Geeklog-Plugins/ogp';	// Plugin Homepage
 $_OGP_CONF['GROUPS']     = array(

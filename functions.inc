@@ -324,7 +324,15 @@ function plugin_getheadercode_ogp() {
     $desc      = OGP_escValue($desc);
 
     $pathImage = str_ireplace($_CONF['site_url'] . '/', $_CONF['path_html'], $image);
-    $imageDimensions = getimagesize($pathImage);
+
+    // Fix dor issue #4
+    if (@is_readable($pathImage)) {
+        $imageDimensions = @getimagesize($pathImage);
+    }
+
+    if (!isset($imageDimensions, $imageDimensions[0], $imageDimensions[1])) {
+        $imageDimensions = array(0, 0);
+    }
 
     $retval = PHP_EOL
         . '<!-- Open Graph Protocol -->' . PHP_EOL
@@ -487,6 +495,11 @@ function plugin_upgrade_ogp() {
 
                 // Does nothing
                 $pi_version = '1.2.2';
+                break;
+
+            case '1.2.2':
+                // Does nothing
+                $pi_version = '1.2.3';
                 break;
 
             default:
