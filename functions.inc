@@ -395,13 +395,25 @@ function plugin_getheadercode_ogp() {
 
     $pathImage = str_ireplace($_CONF['site_url'] . '/', $_CONF['path_html'], $image);
 
-    // Fix dor issue #4
-    if (@is_readable($pathImage)) {
-        $imageDimensions = @getimagesize($pathImage);
-    }
-
-    if (!isset($imageDimensions, $imageDimensions[0], $imageDimensions[1])) {
-        $imageDimensions = array(0, 0);
+    // Fix for issue #4. Prefer dimensions supplied by the content plugin,
+    // otherwise detect local images. Do not emit meaningless 0x0 dimensions
+    // for remote images such as YouTube thumbnails.
+    $imageDimensions = array(0, 0);
+    if (!empty($registered['image_width']) && !empty($registered['image_height'])) {
+        $imageDimensions = array(
+            (int) $registered['image_width'],
+            (int) $registered['image_height']
+        );
+    } elseif (@is_readable($pathImage)) {
+        $detectedDimensions = @getimagesize($pathImage);
+        if (is_array($detectedDimensions)
+            && isset($detectedDimensions[0], $detectedDimensions[1])
+        ) {
+            $imageDimensions = array(
+                (int) $detectedDimensions[0],
+                (int) $detectedDimensions[1]
+            );
+        }
     }
 
     $retval = PHP_EOL
@@ -412,9 +424,12 @@ function plugin_getheadercode_ogp() {
         . '<meta property="og:locale" content="' . $locale . '"' . XHTML . '>' . PHP_EOL
         . '<meta property="og:title" content="' . $title . '"' . XHTML . '>' . PHP_EOL
         . '<meta property="og:image" content="' . $image . '"' . XHTML . '>' . PHP_EOL
-        . '<meta property="og:image:width" content="' . $imageDimensions[0] . '"' . XHTML . '>' . PHP_EOL
-        . '<meta property="og:image:height" content="' . $imageDimensions[1] . '"' . XHTML . '>' . PHP_EOL
         . '<meta property="og:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
+
+    if ($imageDimensions[0] > 0 && $imageDimensions[1] > 0) {
+        $retval .= '<meta property="og:image:width" content="' . $imageDimensions[0] . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:image:height" content="' . $imageDimensions[1] . '"' . XHTML . '>' . PHP_EOL;
+    }
 
     if (!empty($registered)) {
         if (!empty($registered['image_alt']) && !empty($image)) {
