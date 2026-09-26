@@ -11,9 +11,9 @@
 
 <h2>Purpose</h2>
 <p>
-OGP centralizes social metadata for Geeklog pages. It outputs Open Graph
-metadata and, when a compatible content plugin registers richer page metadata,
-Twitter/X card and rich media metadata as well.
+OGP centralizes social metadata for Geeklog pages. It outputs Open Graph and
+Twitter/X card metadata for Geeklog pages, and compatible content plugins may
+register richer page-level image or video metadata.
 </p>
 
 <h2>Configuration</h2>
@@ -30,8 +30,8 @@ Geeklog document header is rendered. OGP then uses the registered title,
 description, canonical URL, image and optional video metadata.
 </p>
 <p>
-When no provider registers metadata, OGP keeps its historical Geeklog page
-detection and Open Graph rendering behavior.
+When no provider registers metadata, OGP keeps its backward-compatible Geeklog
+page detection and generates Open Graph and Twitter/X card metadata.
 </p>
 
 <h2>Removed legacy features in OGP 2.0</h2>
