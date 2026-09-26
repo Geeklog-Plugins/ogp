@@ -570,7 +570,7 @@ function plugin_upgrade_ogp() {
             case '1.1.9';
             case '1.2.0':
             case '1.2.1':
-                $defaultImageUrl = $_CONF['site_admin_url'] . '/plugins/ogp/images/default.png';
+                $defaultImageUrl = $_CONF['site_url'] . '/ogp/social-default.jpg';
                 $c = config::get_instance();
                 $c->set('fb_default_img_url', $defaultImageUrl, 'ogp');
 
