@@ -393,45 +393,78 @@ function plugin_getheadercode_ogp() {
     $title     = OGP_escValue($title);
     $desc      = OGP_escValue($desc);
 
-    $pathImage = str_ireplace($_CONF['site_url'] . '/', $_CONF['path_html'], $image);
+    if (empty($registered)) {
+        /*
+         * Historical OGP rendering path.
+         *
+         * Keep this byte-for-byte equivalent in behavior to the legacy plugin:
+         * when no modern provider registers metadata, OGP must behave exactly
+         * as it did before the provider API existed.
+         */
+        $pathImage = str_ireplace($_CONF['site_url'] . '/', $_CONF['path_html'], $image);
 
-    // Fix for issue #4. Prefer dimensions supplied by the content plugin,
-    // otherwise detect local images. Do not emit meaningless 0x0 dimensions
-    // for remote images such as YouTube thumbnails.
-    $imageDimensions = array(0, 0);
-    if (!empty($registered['image_width']) && !empty($registered['image_height'])) {
-        $imageDimensions = array(
-            (int) $registered['image_width'],
-            (int) $registered['image_height']
-        );
-    } elseif (@is_readable($pathImage)) {
-        $detectedDimensions = @getimagesize($pathImage);
-        if (is_array($detectedDimensions)
-            && isset($detectedDimensions[0], $detectedDimensions[1])
-        ) {
-            $imageDimensions = array(
-                (int) $detectedDimensions[0],
-                (int) $detectedDimensions[1]
-            );
+        // Fix dor issue #4
+        if (@is_readable($pathImage)) {
+            $imageDimensions = @getimagesize($pathImage);
         }
-    }
 
-    $retval = PHP_EOL
-        . '<!-- Open Graph Protocol -->' . PHP_EOL
-        . '<meta property="og:site_name" content="' . $site_name . '"' . XHTML . '>' . PHP_EOL
-        . '<meta property="og:url" content="' . $url . '"' . XHTML . '>' . PHP_EOL
-        . '<meta property="og:type" content="' . $type . '"' . XHTML . '>' . PHP_EOL
-        . '<meta property="og:locale" content="' . $locale . '"' . XHTML . '>' . PHP_EOL
-        . '<meta property="og:title" content="' . $title . '"' . XHTML . '>' . PHP_EOL
-        . '<meta property="og:image" content="' . $image . '"' . XHTML . '>' . PHP_EOL
-        . '<meta property="og:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
+        if (!isset($imageDimensions, $imageDimensions[0], $imageDimensions[1])) {
+            $imageDimensions = array(0, 0);
+        }
 
-    if ($imageDimensions[0] > 0 && $imageDimensions[1] > 0) {
-        $retval .= '<meta property="og:image:width" content="' . $imageDimensions[0] . '"' . XHTML . '>' . PHP_EOL
-            . '<meta property="og:image:height" content="' . $imageDimensions[1] . '"' . XHTML . '>' . PHP_EOL;
-    }
+        $retval = PHP_EOL
+            . '<!-- Open Graph Protocol -->' . PHP_EOL
+            . '<meta property="og:site_name" content="' . $site_name . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:url" content="' . $url . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:type" content="' . $type . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:locale" content="' . $locale . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:title" content="' . $title . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:image" content="' . $image . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:image:width" content="' . $imageDimensions[0] . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:image:height" content="' . $imageDimensions[1] . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
+    } else {
+        /*
+         * Modern provider rendering path.
+         *
+         * This path is only entered after a plugin explicitly calls
+         * OGP_registerSocialMetadata(). No provider means no behavior change.
+         */
+        $pathImage = str_ireplace($_CONF['site_url'] . '/', $_CONF['path_html'], $image);
+        $imageDimensions = array(0, 0);
 
-    if (!empty($registered)) {
+        if (!empty($registered['image_width']) && !empty($registered['image_height'])) {
+            $imageDimensions = array(
+                (int) $registered['image_width'],
+                (int) $registered['image_height']
+            );
+        } elseif (@is_readable($pathImage)) {
+            $detectedDimensions = @getimagesize($pathImage);
+            if (is_array($detectedDimensions)
+                && isset($detectedDimensions[0], $detectedDimensions[1])
+            ) {
+                $imageDimensions = array(
+                    (int) $detectedDimensions[0],
+                    (int) $detectedDimensions[1]
+                );
+            }
+        }
+
+        $retval = PHP_EOL
+            . '<!-- Open Graph Protocol -->' . PHP_EOL
+            . '<meta property="og:site_name" content="' . $site_name . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:url" content="' . $url . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:type" content="' . $type . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:locale" content="' . $locale . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:title" content="' . $title . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:image" content="' . $image . '"' . XHTML . '>' . PHP_EOL
+            . '<meta property="og:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
+
+        if ($imageDimensions[0] > 0 && $imageDimensions[1] > 0) {
+            $retval .= '<meta property="og:image:width" content="' . $imageDimensions[0] . '"' . XHTML . '>' . PHP_EOL
+                . '<meta property="og:image:height" content="' . $imageDimensions[1] . '"' . XHTML . '>' . PHP_EOL;
+        }
+
         if (!empty($registered['image_alt']) && !empty($image)) {
             $imageAlt = OGP_escValue($registered['image_alt']);
             $retval .= '<meta property="og:image:alt" content="' . $imageAlt . '"' . XHTML . '>' . PHP_EOL;
