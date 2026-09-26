@@ -1,126 +1,48 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta http-equiv="Content-Style-Type" content="text/css">
-	<link rel="stylesheet" type="text/css" href="../docstyle.css">
-	<title>Geeklog OGP(Open Graph Protocol)プラグイン</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <link rel="stylesheet" type="text/css" href="../docstyle.css">
+    <title>Geeklog OGP プラグイン</title>
 </head>
-
 <body>
-<h1>Geeklog OGP(Open Graph Protocol)プラグイン</h1>
+<h1>Geeklog OGP プラグイン</h1>
 
-<h2><a name="top">設定</a></h2>
+<h2>目的</h2>
+<p>
+OGP は Geeklog ページのソーシャルメタデータを一元管理します。
+Open Graph と Twitter/X Card のメタデータを出力し、互換性のある
+コンテンツプラグインはページ固有の画像や動画など、より詳細な
+メタデータを登録できます。
+</p>
 
-<h3><a name="desc_fs_main">OGPの主要設定</a></h3>
+<h2>設定</h2>
+<h3>デフォルトのソーシャル画像</h3>
+<p>
+現在のページに適切な画像がない場合に OGP が使用する公開画像 URL
+を設定します。
+</p>
 
-<table>
-	<tr>
-		<th style="width: 25%;">項目(変数)</th>
-	    <th style="width: 25%:">デフォルト</th>
-	    <th style="width: 50%;">説明</th>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_fb_user_ids">FacebookユーザーID</a></td>
-		<td valign="top">（なし）</td>
-		<td valign="top">FacebookのユーザーIDを指定します。詳しくは<a href="plugins/ogp/docs/japanese/install.html">install.html</a>をご覧ください。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_fb_app_id">FacebookアプリケーションID</a></td>
-		<td valign="top">（なし）</td>
-		<td valign="top">FacebookのアプリケーションID(App ID)を指定します。OGPプラグインに付属する「いいね!」ボタンやコメント機能を使用する場合は必須です。詳しくは<a href="plugins/ogp/docs/japanese/install.html">install.html</a>をご覧ください。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_fb_default_img_url">サイトのデフォルト画像</a></td>
-		<td valign="top">サイトのURL/admin/plugins/ogp/images/facebook_128.png</td>
-		<td valign="top">Facebookと連携するコンテンツに画像がない場合の既定の画像(50ピクセル*50ピクセル以上)URLを指定します。</td>
-	</tr>
-</table>
+<h2>相互運用性</h2>
+<p>
+コンテンツプラグインは、Geeklog が最終的なドキュメントヘッダーを
+生成する前に <code>OGP_registerSocialMetadata()</code> を呼び出して、
+タイトル、説明、canonical URL、画像、動画などのページ固有メタデータを
+登録できます。
+</p>
+<p>
+プロバイダーがメタデータを登録しない場合、OGP は従来互換の
+Geeklog ページ検出を使用して Open Graph と Twitter/X Card の
+メタデータを生成します。
+</p>
 
-<h3>Facebookいいね!ボタンの設定</h3>
-
-<table>
-	<tr>
-		<th style="width: 25%;">項目(変数)</th>
-	    <th style="width: 25%:">デフォルト</th>
-	    <th style="width: 50%;">説明</th>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_like_send">「送る」ボタンを表示する</a></td>
-		<td valign="top">はい</td>
-		<td valign="top">「はい」にすると「送る」ボタンを表示します。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_like_show_faces">顔を表示する</a></td>
-		<td valign="top">はい</td>
-		<td valign="top">「はい」にすると、「いいね!」をクリックしたユーザーのプロフィール画像を表示します。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_like_style_layout">レイアウト</a></td>
-		<td valign="top">標準</td>
-		<td valign="top">ボタンのレイアウトを指定します。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_like_width">幅（ピクセル）</a></td>
-		<td valign="top">450</td>
-		<td valign="top">「いいね!」ボタンを表示する領域の横幅を指定します。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_like_verb">動作</a></td>
-		<td valign="top">いいね!</td>
-		<td valign="top">「いいね!」ボタンを表示するか「おすすめ」ボタンを表示するかを指定します。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_like_color">配色</a></td>
-		<td valign="top">明るい色</td>
-		<td valign="top">ボタンの色を指定します。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_like_font">フォント</a></td>
-		<td valign="top">標準</td>
-		<td valign="top">フォントを指定します。</td>
-	</tr>
-</table>
-
-<h3>Facebookコメントの設定</h3>
-
-<table>
-	<tr>
-		<th style="width: 25%;">項目(変数)</th>
-	    <th style="width: 25%:">デフォルト</th>
-	    <th style="width: 50%;">説明</th>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_comments_num_posts">コメントの表示数</a></td>
-		<td valign="top">10</td>
-		<td valign="top">表示するコメントの最大数を指定します。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_comments_width">幅（ピクセル）</a></td>
-		<td valign="top">500</td>
-		<td valign="top">コメントを表示する領域の横幅を指定します。</td>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_comments_color">配色</a></td>
-		<td valign="top">明るい色</td>
-		<td valign="top">コメントの配色を指定します。</td>
-	</tr>
-</table>
-
-<h3>コンテンツの種類</h3>
-
-<table>
-	<tr>
-		<th style="width: 25%;">項目(変数)</th>
-	    <th style="width: 25%:">デフォルト</th>
-	    <th style="width: 50%;">説明</th>
-	</tr>
-	<tr>
-		<td valign="top"><a name="desc_types">種類</a></td>
-		<td valign="top">[article, staticpages, calendar, calendarjp, links]</td>
-		<td valign="top">いいね!ボタンやFacebookコメントを表示させたいコンテンツの種類を指定します。現在、サポートされているのは、article, staticpages, calendar, calendarjp, linksです。</td>
-	</tr>
-</table>
-
+<h2>OGP 2.0 で削除された旧機能</h2>
+<p>
+旧 Facebook Like、Facebook Comments、Facebook SDK、関連する
+autotag と設定項目は削除されました。共有ボタンはテーマまたは
+専用コンポーネントの役割とし、OGP はソーシャルメタデータの生成に
+専念します。
+</p>
 </body>
 </html>
