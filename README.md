@@ -9,8 +9,13 @@ calendar events, link categories, poll items and download files.  You can set th
 Facebook Like button and/or Facebook comments in Configuration.
 
 ## System requirements
-- Geeklog-1.6.0 or newer (compatible with Geeklog-2.2.1sr1)
-- PHP-5.0.0 or newer
+- Geeklog 1.6.0 or newer
+- PHP 5.6.4 or newer (including PHP 8.1/8.3)
+
+The Geeklog 1.6.0 minimum is preserved from the historical OGP compatibility line.
+The PHP minimum follows the maintained OGP/Geeklog compatibility baseline used by
+current Geeklog releases. The modern provider API is optional: when no provider
+registers metadata, OGP keeps its historical rendering behavior.
 
 ## Before installation
 	
