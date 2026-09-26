@@ -74,8 +74,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq "$_OGP_CONF['pi_version'] = '2.0.0';" config.php
-          grep -Fq "$_OGP_CONF['gl_version'] = '1.6.0';" config.php
+          grep -Fq "\$_OGP_CONF['pi_version'] = '2.0.0';" config.php
+          grep -Fq "\$_OGP_CONF['gl_version'] = '1.6.0';" config.php
           grep -Fq "version_compare(PHP_VERSION, '5.6.4', '>=')" autoinstall.php
 
           python3 - <<'PY'
@@ -97,10 +97,10 @@ jobs:
         run: |
           set -euo pipefail
           grep -Fq 'function OGP_registerSocialMetadata($metadata)' functions.inc
-          grep -Fq "if (empty($registered)) {" functions.inc
+          grep -Fq "if (empty(\$registered)) {" functions.inc
           grep -Fq 'Historical OGP rendering path.' functions.inc
           grep -Fq "case '1.2.3':" functions.inc
-          grep -Fq "$pi_version = '2.0.0';" functions.inc
+          grep -Fq "\$pi_version = '2.0.0';" functions.inc
 
           if grep -Ei "(maps|documents|videos|mediagallery)" functions.inc; then
             echo 'OGP must not hard-code optional provider plugin names.' >&2
@@ -196,8 +196,8 @@ jobs:
           ! unzip -Z1 "dist/${ARCHIVE}" | grep -q '^ogp/dist/'
           ! unzip -Z1 "dist/${ARCHIVE}" | grep -q '^ogp/build/'
 
-          unzip -p "dist/${ARCHIVE}" ogp/config.php | grep -Fq "$_OGP_CONF['pi_version'] = '2.0.0';"
-          unzip -p "dist/${ARCHIVE}" ogp/config.php | grep -Fq "$_OGP_CONF['gl_version'] = '1.6.0';"
+          unzip -p "dist/${ARCHIVE}" ogp/config.php | grep -Fq "\$_OGP_CONF['pi_version'] = '2.0.0';"
+          unzip -p "dist/${ARCHIVE}" ogp/config.php | grep -Fq "\$_OGP_CONF['gl_version'] = '1.6.0';"
           unzip -p "dist/${ARCHIVE}" ogp/autoinstall.php | grep -Fq "version_compare(PHP_VERSION, '5.6.4', '>=')"
           unzip -p "dist/${ARCHIVE}" ogp/functions.inc | grep -Fq 'function OGP_registerSocialMetadata($metadata)'
 
