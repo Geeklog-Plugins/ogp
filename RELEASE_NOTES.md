@@ -33,6 +33,20 @@ The provider contract supports:
 
 Provider-supplied or locally detectable image dimensions are emitted on the modern provider path. The historical OGP path retains its previous image-dimension behavior.
 
+## Legacy social widgets removed
+
+OGP 2.0 removes the obsolete Facebook Like and Facebook Comments integration,
+including the Facebook JavaScript SDK loader, Like/Comments autotags, template
+variables and their configuration fields.
+
+Sharing UI is intentionally outside OGP's scope. A theme such as Eclipse can
+continue to provide Facebook, X/Twitter and LinkedIn share buttons while OGP
+provides the metadata those services read from the shared URL.
+
+Existing installations are cleaned during the 1.2.3 to 2.0.0 upgrade. The
+historical default social image setting is retained to avoid an unnecessary
+configuration migration.
+
 ## Upgrade
 
 Upgrades from OGP 1.2.3 to 2.0.0 require no database schema or persisted configuration migration. The plugin version is advanced through the normal Geeklog plugin upgrade mechanism.
