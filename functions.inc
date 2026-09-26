@@ -666,8 +666,6 @@ function OGP_loadConfig() {
 
         if (is_array($temp) && (count($temp) > 0)) {
             $_OGP_CONF = array_merge($_OGP_CONF, $temp);
-            $_OGP_CONF['fb_app_id'] = trim(@$_OGP_CONF['fb_app_id']);
-            $_OGP_CONF['fb_user_ids'] = trim(@$_OGP_CONF['fb_user_ids']);
         }
     }
 }
