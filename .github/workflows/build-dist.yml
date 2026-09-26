@@ -124,6 +124,7 @@ jobs:
           test -s install_defaults.php
           test -s configuration_validation.php
           test -s public_html/index.php
+          test -s public_html/social-default.jpg
           test -s admin/index.php
           test -s admin/images/ogp.png
           test -s README.md
@@ -198,6 +199,7 @@ jobs:
           unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/BUILD_INFO.txt'
           unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/admin/images/ogp.png'
           unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/public_html/index.php'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/public_html/social-default.jpg'
 
           ! unzip -Z1 "dist/${ARCHIVE}" | grep -q '^ogp/.github/'
           ! unzip -Z1 "dist/${ARCHIVE}" | grep -q '^ogp/dist/'
