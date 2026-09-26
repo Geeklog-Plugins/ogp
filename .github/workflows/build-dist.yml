@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - develop-2.0
+      - cleanup-2.0-docs
+      - master
     paths-ignore:
       - 'dist/**'
   pull_request:
@@ -176,7 +178,7 @@ jobs:
           OGP 2.0.0 installable archive
           Minimum Geeklog: 1.6.0
           Minimum PHP: 5.6.4
-          Source branch: develop-2.0
+          Source branch: ${GITHUB_REF_NAME}
           Source commit: ${SOURCE_SHA}
           EOF
 
@@ -221,8 +223,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git fetch origin develop-2.0
-          BRANCH_SHA="$(git rev-parse origin/develop-2.0)"
+          git fetch origin "${GITHUB_REF_NAME}"
+          BRANCH_SHA="$(git rev-parse "origin/${GITHUB_REF_NAME}")"
           if [ "$BRANCH_SHA" != "$SOURCE_SHA" ]; then
             echo 'A newer source commit exists; archive will not be committed.' >&2
             echo 'commit_archive=false' >> "$GITHUB_OUTPUT"
@@ -243,4 +245,4 @@ jobs:
             exit 0
           fi
           git commit -m "Build ogp_2.0.0_1.6.0.zip for ${SOURCE_SHA} [skip ci]"
-          git push origin HEAD:develop-2.0
+          git push origin "HEAD:${GITHUB_REF_NAME}"
