@@ -319,7 +319,9 @@ function plugin_getheadercode_ogp() {
     
             if (PLG_invokeService('staticpages', 'get', $args, $output, $svc_msg) == PLG_RET_OK) {
                 $content = $output['sp_content'];
-                $title   = $output['sp_title'];
+                $title   = !empty($output['page_title'])
+                    ? $output['page_title']
+                    : $output['sp_title'];
                 $desc    = $output['meta_description'];
     
                 if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $content, $match)) {
