@@ -482,15 +482,6 @@ function plugin_getheadercode_ogp() {
 }
 
 /**
-* Checks to see if this plugin uses comments
-*
-* @return   boolean true or false
-*/
-function plugin_commentsupport_ogp() {
-    return false;
-}
-
-/**
 * Puts an option for the plugin in the command and control block on moderation.php
 *
 * @return   array   Array containing (plugin name, admin url, url of plugin icon)
@@ -520,9 +511,6 @@ function plugin_getadminoption_ogp() {
     if (SEC_hasRights('ogp.edit')) {
         $pi_name = OGP_str('admin');
 
-        if (!OGP_isFbUserIdSet() || !OGP_isFbAppIdSet()) {
-            $pi_name .= '!';
-        }
 
         $admin_url = $_CONF['site_admin_url'] . '/plugins/ogp/index.php';
         $num_items = '';
