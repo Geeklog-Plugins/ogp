@@ -101,6 +101,7 @@ jobs:
           grep -Fq "array_key_exists(\$tag, \$autolinkModules)" functions.inc
           grep -Fq 'Historical Geeklog page-detection path.' functions.inc
           grep -Fq 'summary_large_image' functions.inc
+          grep -Fq "\$output['sp_page_title']" functions.inc
           grep -Fq '($imageDimensions[0] < 200 || $imageDimensions[1] < 200)' functions.inc
           grep -Fq "case '1.2.3':" functions.inc
           grep -Fq "\$pi_version = '2.0.0';" functions.inc
