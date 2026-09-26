@@ -283,7 +283,8 @@ function plugin_getheadercode_ogp() {
                 }
             }
         } elseif (preg_match("@index\.php\?topic=(.+)$@i", $url, $match)) {
-            // Topic
+            // Topic archive/listing
+            $type = 'website';
             $tid = $match[1];
             $tid = DB_escapeString(COM_applyFilter($tid));
             $sql = "SELECT topic, imageurl, meta_description "
@@ -385,21 +386,47 @@ function plugin_getheadercode_ogp() {
 
     if (empty($registered)) {
         /*
-         * Historical OGP rendering path.
+         * Historical Geeklog page-detection path.
          *
-         * Keep this byte-for-byte equivalent in behavior to the legacy plugin:
-         * when no modern provider registers metadata, OGP must behave exactly
-         * as it did before the provider API existed.
+         * OGP 2.0 keeps the legacy content detection, while modernizing the
+         * emitted social metadata. Images that are too small for useful link
+         * previews fall back to the configured default social image.
          */
         $pathImage = str_ireplace($_CONF['site_url'] . '/', $_CONF['path_html'], $image);
+        $imageDimensions = array(0, 0);
 
-        // Fix dor issue #4
         if (@is_readable($pathImage)) {
-            $imageDimensions = @getimagesize($pathImage);
+            $detectedDimensions = @getimagesize($pathImage);
+            if (is_array($detectedDimensions)
+                && isset($detectedDimensions[0], $detectedDimensions[1])
+            ) {
+                $imageDimensions = array(
+                    (int) $detectedDimensions[0],
+                    (int) $detectedDimensions[1]
+                );
+            }
         }
 
-        if (!isset($imageDimensions, $imageDimensions[0], $imageDimensions[1])) {
+        // Tiny icons (for example 48x48 topic icons) make poor social cards.
+        // Prefer the configured default social image below 200x200.
+        if ($imageDimensions[0] > 0 && $imageDimensions[1] > 0
+            && ($imageDimensions[0] < 200 || $imageDimensions[1] < 200)
+        ) {
+            $image = $_OGP_CONF['fb_default_img_url'];
+            $pathImage = str_ireplace($_CONF['site_url'] . '/', $_CONF['path_html'], $image);
             $imageDimensions = array(0, 0);
+
+            if (@is_readable($pathImage)) {
+                $detectedDimensions = @getimagesize($pathImage);
+                if (is_array($detectedDimensions)
+                    && isset($detectedDimensions[0], $detectedDimensions[1])
+                ) {
+                    $imageDimensions = array(
+                        (int) $detectedDimensions[0],
+                        (int) $detectedDimensions[1]
+                    );
+                }
+            }
         }
 
         $retval = PHP_EOL
@@ -409,10 +436,21 @@ function plugin_getheadercode_ogp() {
             . '<meta property="og:type" content="' . $type . '"' . XHTML . '>' . PHP_EOL
             . '<meta property="og:locale" content="' . $locale . '"' . XHTML . '>' . PHP_EOL
             . '<meta property="og:title" content="' . $title . '"' . XHTML . '>' . PHP_EOL
-            . '<meta property="og:image" content="' . $image . '"' . XHTML . '>' . PHP_EOL
-            . '<meta property="og:image:width" content="' . $imageDimensions[0] . '"' . XHTML . '>' . PHP_EOL
-            . '<meta property="og:image:height" content="' . $imageDimensions[1] . '"' . XHTML . '>' . PHP_EOL
-            . '<meta property="og:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
+            . '<meta property="og:image" content="' . OGP_escValue($image) . '"' . XHTML . '>' . PHP_EOL;
+
+        if ($imageDimensions[0] > 0 && $imageDimensions[1] > 0) {
+            $retval .= '<meta property="og:image:width" content="' . $imageDimensions[0] . '"' . XHTML . '>' . PHP_EOL
+                . '<meta property="og:image:height" content="' . $imageDimensions[1] . '"' . XHTML . '>' . PHP_EOL;
+        }
+
+        $retval .= '<meta property="og:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL
+            . '<meta name="twitter:card" content="summary_large_image"' . XHTML . '>' . PHP_EOL
+            . '<meta name="twitter:title" content="' . $title . '"' . XHTML . '>' . PHP_EOL
+            . '<meta name="twitter:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
+
+        if (!empty($image)) {
+            $retval .= '<meta name="twitter:image" content="' . OGP_escValue($image) . '"' . XHTML . '>' . PHP_EOL;
+        }
     } else {
         /*
          * Modern provider rendering path.
