@@ -237,149 +237,152 @@ function plugin_getheadercode_ogp() {
         COM_errorLog(OGP_str('fb_ids_not_set'));
     }
 
-    if (empty($registered) && ((strcasecmp($url, $_CONF['site_url'] . '/') === 0) ||
-        (strcasecmp($url, $_CONF['site_url']) === 0))) {
-        // Site HOME
-        $type = 'website';
-    } elseif (stripos($url, $_CONF['site_url'] . '/article.php') === 0) {
-        // Article
-        COM_setArgNames(array('story'));
-        $sid = COM_getArgument('story');
-        $sid = COM_applyFilter($sid);
-        $sid = DB_escapeString($sid);
-
-        if (version_compare(VERSION, '2.0.0') >= 0) {
-            $sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
-                 . "FROM {$_TABLES['stories']} AS s, {$_TABLES['topic_assignments']} AS ta "
-                 . "WHERE (ta.type = 'article') AND (ta.id = s.sid) "
-                 . "  AND (s.sid ='{$sid}') "
-                 . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
-                 . COM_getPermSQL('AND', 0, 2, 's')
-                 . COM_getTopicSQL('AND', 0, 'ta')
-                 . "GROUP BY title, introtext, bodytext, meta_description ";
-        } else {
-            $sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
-                 . "FROM {$_TABLES['stories']} AS s "
-                 . "  LEFT JOIN {$_TABLES['topics']} AS t "
-                 . "    ON s.tid = t.tid "
-                 . "WHERE (s.sid ='{$sid}') "
-                 . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
-                 . COM_getPermSQL('AND', 0, 2, 's')
-                 . COM_getTopicSQL('AND', 0, 't')
-                 . "GROUP BY title, introtext, bodytext, meta_description ";
+    if (empty($registered)) {
+        if ((strcasecmp($url, $_CONF['site_url'] . '/') === 0) ||
+                (strcasecmp($url, $_CONF['site_url']) === 0)) {
+            // Site HOME
+            $type = 'website';
+        } elseif (stripos($url, $_CONF['site_url'] . '/article.php') === 0) {
+            // Article
+            COM_setArgNames(array('story'));
+            $sid = COM_getArgument('story');
+            $sid = COM_applyFilter($sid);
+            $sid = DB_escapeString($sid);
+    
+            if (version_compare(VERSION, '2.0.0') >= 0) {
+                $sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
+                     . "FROM {$_TABLES['stories']} AS s, {$_TABLES['topic_assignments']} AS ta "
+                     . "WHERE (ta.type = 'article') AND (ta.id = s.sid) "
+                     . "  AND (s.sid ='{$sid}') "
+                     . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
+                     . COM_getPermSQL('AND', 0, 2, 's')
+                     . COM_getTopicSQL('AND', 0, 'ta')
+                     . "GROUP BY title, introtext, bodytext, meta_description ";
+            } else {
+                $sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
+                     . "FROM {$_TABLES['stories']} AS s "
+                     . "  LEFT JOIN {$_TABLES['topics']} AS t "
+                     . "    ON s.tid = t.tid "
+                     . "WHERE (s.sid ='{$sid}') "
+                     . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
+                     . COM_getPermSQL('AND', 0, 2, 's')
+                     . COM_getTopicSQL('AND', 0, 't')
+                     . "GROUP BY title, introtext, bodytext, meta_description ";
+            }
+    
+            $result = DB_query($sql);
+    
+            if (!DB_error() && (DB_numRows($result) == 1)) {
+                $A = DB_fetchArray($result, false);
+                $A = array_map('stripslashes', $A);
+    
+                $title     = $A['title'];
+                $introtext = OGP_replaceTags($A['introtext']);
+                $bodytext  = OGP_replaceTags($A['bodytext']);
+                $desc      = $A['meta_description'];
+                $body = $introtext . ' ' . $bodytext;
+    
+                if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@si', $body, $match)) {
+                    $image = $match[1];
+                    $image = OGP_fixUri($image);
+                }
+    
+                if (empty($desc)) {
+                    $desc = $introtext;
+                }
+            }
+        } elseif (preg_match("@index\.php\?topic=(.+)$@i", $url, $match)) {
+            // Topic
+            $tid = $match[1];
+            $tid = DB_escapeString(COM_applyFilter($tid));
+            $sql = "SELECT topic, imageurl, meta_description "
+                 . "FROM {$_TABLES['topics']} "
+                 . "WHERE (tid ='{$tid}') "
+                 . COM_getTopicSQL('AND', 0);
+            $result = DB_query($sql);
+    
+            if (!DB_error() && (DB_numRows($result) == 1)) {
+                $A = DB_fetchArray($result, false);
+                $A = array_map('stripslashes', $A);
+    
+                $title = $A['topic'];
+                $image = OGP_fixUri($A['imageurl']);
+                $desc  = $A['meta_description'];
+    
+                if (empty($desc)) {
+                    $desc = $title;
+                }
+            }
+        } elseif (in_array('staticpages', $_PLUGINS) &&
+                   preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url, $match)) {
+            // Staticpages
+            $sp_id = $match[1];
+            $sp_id = COM_applyFilter($sp_id);
+            $output  = '';
+            $args    = array(
+                        'sp_id' => $sp_id,
+                        'mode'  => 'autotag',
+            );
+            $svc_msg = array();
+    
+            if (PLG_invokeService('staticpages', 'get', $args, $output, $svc_msg) == PLG_RET_OK) {
+                $content = $output['sp_content'];
+                $title   = $output['sp_title'];
+                $desc    = $output['meta_description'];
+    
+                if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $content, $match)) {
+                    $image = $match[1];
+                    $image = OGP_fixUri($image);
+                }
+    
+                if (empty($desc)) {
+                    $desc = $content;
+                }
+            }
+        } elseif (in_array('calendar', $_PLUGINS) &&
+                   preg_match("@calendar/event\.php\?eid=(.+)$@i", $url, $match)) {
+            // Calendar
+            $eid = $match[1];
+            $eid = DB_escapeString(COM_applyFilter($eid));
+            $sql = "SELECT title, description, event_type, location "
+                 . "FROM {$_TABLES['events']} "
+                 . "WHERE (eid = '{$eid}') "
+                 . COM_getPermSQL('AND');
+            $result = DB_query($sql);
+    
+            if (!DB_error() && (DB_numRows($result) == 1)) {
+                $A = DB_fetchArray($result, false);
+                $title = $A['title'];
+                $desc  = $A['description'];
+    
+                if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $desc, $m)) {
+                    $image = $m[1];
+                    $image = OGP_fixUri($image);
+                }
+            }
+        } elseif (in_array('calendarjp', $_PLUGINS) &&
+                   preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url, $match)) {
+            // Calendar
+            $eid = $match[1];
+            $eid = DB_escapeString(COM_applyFilter($eid));
+            $sql = "SELECT title, description, event_type, location "
+                 . "FROM {$_TABLES['eventsjp']} "
+                 . "WHERE (eid = '{$eid}') "
+                 . COM_getPermSQL('AND');
+            $result = DB_query($sql);
+    
+            if (!DB_error() && (DB_numRows($result) == 1)) {
+                $A = DB_fetchArray($result, false);
+                $title = $A['title'];
+                $desc  = $A['description'];
+    
+                if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $desc, $m)) {
+                    $image = $m[1];
+                    $image = OGP_fixUri($image);
+                }
+            }
         }
-
-        $result = DB_query($sql);
-
-        if (!DB_error() && (DB_numRows($result) == 1)) {
-            $A = DB_fetchArray($result, false);
-            $A = array_map('stripslashes', $A);
-
-            $title     = $A['title'];
-            $introtext = OGP_replaceTags($A['introtext']);
-            $bodytext  = OGP_replaceTags($A['bodytext']);
-            $desc      = $A['meta_description'];
-            $body = $introtext . ' ' . $bodytext;
-
-            if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@si', $body, $match)) {
-                $image = $match[1];
-                $image = OGP_fixUri($image);
-            }
-
-            if (empty($desc)) {
-                $desc = $introtext;
-            }
-        }
-    } elseif (preg_match("@index\.php\?topic=(.+)$@i", $url, $match)) {
-        // Topic
-        $tid = $match[1];
-        $tid = DB_escapeString(COM_applyFilter($tid));
-        $sql = "SELECT topic, imageurl, meta_description "
-             . "FROM {$_TABLES['topics']} "
-             . "WHERE (tid ='{$tid}') "
-             . COM_getTopicSQL('AND', 0);
-        $result = DB_query($sql);
-
-        if (!DB_error() && (DB_numRows($result) == 1)) {
-            $A = DB_fetchArray($result, false);
-            $A = array_map('stripslashes', $A);
-
-            $title = $A['topic'];
-            $image = OGP_fixUri($A['imageurl']);
-            $desc  = $A['meta_description'];
-
-            if (empty($desc)) {
-                $desc = $title;
-            }
-        }
-    } elseif (in_array('staticpages', $_PLUGINS) &&
-               preg_match("@staticpages/index\.php(?:\?page=|/)(.+)$@i", $url, $match)) {
-        // Staticpages
-        $sp_id = $match[1];
-        $sp_id = COM_applyFilter($sp_id);
-        $output  = '';
-        $args    = array(
-                    'sp_id' => $sp_id,
-                    'mode'  => 'autotag',
-        );
-        $svc_msg = array();
-
-        if (PLG_invokeService('staticpages', 'get', $args, $output, $svc_msg) == PLG_RET_OK) {
-            $content = $output['sp_content'];
-            $title   = $output['sp_title'];
-            $desc    = $output['meta_description'];
-
-            if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $content, $match)) {
-                $image = $match[1];
-                $image = OGP_fixUri($image);
-            }
-
-            if (empty($desc)) {
-                $desc = $content;
-            }
-        }
-    } elseif (in_array('calendar', $_PLUGINS) &&
-               preg_match("@calendar/event\.php\?eid=(.+)$@i", $url, $match)) {
-        // Calendar
-        $eid = $match[1];
-        $eid = DB_escapeString(COM_applyFilter($eid));
-        $sql = "SELECT title, description, event_type, location "
-             . "FROM {$_TABLES['events']} "
-             . "WHERE (eid = '{$eid}') "
-             . COM_getPermSQL('AND');
-        $result = DB_query($sql);
-
-        if (!DB_error() && (DB_numRows($result) == 1)) {
-            $A = DB_fetchArray($result, false);
-            $title = $A['title'];
-            $desc  = $A['description'];
-
-            if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $desc, $m)) {
-                $image = $m[1];
-                $image = OGP_fixUri($image);
-            }
-        }
-    } elseif (in_array('calendarjp', $_PLUGINS) &&
-               preg_match("@calendarjp/event\.php\?eid=(.+)$@i", $url, $match)) {
-        // Calendar
-        $eid = $match[1];
-        $eid = DB_escapeString(COM_applyFilter($eid));
-        $sql = "SELECT title, description, event_type, location "
-             . "FROM {$_TABLES['eventsjp']} "
-             . "WHERE (eid = '{$eid}') "
-             . COM_getPermSQL('AND');
-        $result = DB_query($sql);
-
-        if (!DB_error() && (DB_numRows($result) == 1)) {
-            $A = DB_fetchArray($result, false);
-            $title = $A['title'];
-            $desc  = $A['description'];
-
-            if (preg_match('@<img\s\s*.*?src="(.+?)".*?>@msi', $desc, $m)) {
-                $image = $m[1];
-                $image = OGP_fixUri($image);
-            }
-        }
+    
     }
 
     // <og:site_name> tag and <og:description> tag are optional, but are recommended.
