@@ -69,7 +69,7 @@ function plugin_initconfig_ogp() {
     $c = config::get_instance();
 
     if (!$c->group_exists($me)) {
-        $defaultImageUrl = $_CONF['site_admin_url'] . '/plugins/ogp/images/default.png';
+        $defaultImageUrl = $_CONF['site_url'] . '/ogp/social-default.jpg';
         $c->add('sg_main', null, 'subgroup', 0, 0, null, 0, true, $me);
 
         $c->add('fs_main', null, 'fieldset', 0, 0, null, 0, true, $me);
