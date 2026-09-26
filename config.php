@@ -49,13 +49,6 @@ $_OGP_CONF['MAPPINGS']   = array(
 		'ogp.edit' => array('Open Graph Protocol Admin'),
 );
 
-$_OGP_CONF['LAYOUTS'] = array('standard', 'button_count', 'box_count');
-
-$_OGP_CONF['FONTS'] = array(
-	'', 'arial', 'lucida grande', 'segoe ui', 'tahoma', 'trebuchet ms',
-	'verdana',
-);
-
 // @see https://developers.facebook.com/docs/internationalization
 $_OGP_CONF['LOCALE_MAPPINGS'] = array(
 //	Geeklog language name	=> Facebook locale
