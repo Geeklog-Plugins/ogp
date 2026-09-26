@@ -1,28 +1,47 @@
-# ogp
-The OGP (Open Graph Protocol) plugin for Geeklog allows you to output <og:> tags for SNS like Facebook.
-The OGP plugin supports <a href="http://ogp.me/">Open Graph Protocol</a>(OGP) and allows you to run your Geeklog site 
-in cooperation with web sites supporting OGP such as <a href="https://developers.facebook.com/docs/opengraph/">Facebook</a>
-by producing &lt;meta property="og:***" content="***"&gt; tags.
+# OGP
 
-Besides, the plugin allows you to display Facebook Like buttons and/or Facebook comments in your articles, static pages,
-calendar events, link categories, poll items and download files.  You can set the kinds of contents in which to show
-Facebook Like button and/or Facebook comments in Configuration.
+The OGP (Open Graph Protocol) plugin for Geeklog centralizes social metadata
+used by Facebook, LinkedIn, X/Twitter and other services when a page URL is
+shared.
+
+OGP outputs Open Graph metadata for Geeklog pages and provides an optional
+provider API, `OGP_registerSocialMetadata()`, so content plugins can supply
+authoritative page-level social metadata without duplicating rendering logic.
 
 ## System requirements
-- Geeklog-1.6.0 or newer (compatible with Geeklog-2.2.1sr1)
-- PHP-5.0.0 or newer
 
-## Before installation
-	
-Confirm your Facebook user ID.  In case you don't know your ID, <a href="https://apps.facebook.com/what-is-my-user-id/">This application</a> is handy.
-If you want to use Facebook Like button or Facebook comments, you have to acquire an application ID at <a href="https://developers.facebook.com/apps">Facebook Developers</a> like this.
+- Geeklog 1.6.0 or newer
+- PHP 5.6.4 or newer (including PHP 8.1/8.3)
 
-1. Click on <strong>+ Create New App</strong>.
-2. In the dialog, enter some string (which DOES NOT include "Facebook") as "App Name", select your locale, check "Facebook terms of use" 
-and click on "continue".
-3. In the following screen, you have to get security check.  Enter two words in the CAPTCHA dialog.  If words are hard to discern, then keep clicking "display other words" till you get ones you can recognize.
-4. In the following screen, write down your <strong>App ID</strong>.  Next, click on <strong>Website</strong> just below <strong>Select how your app integrates with Facebook</strong> and enter your site URL and save.
-	
-## Install 
+## OGP 2.0 scope
 
-Please see "install.html" under admin/docs directory for detail.
+OGP 2.0 focuses on one responsibility: social metadata.
+
+It provides:
+
+- Open Graph metadata;
+- Twitter/X card metadata for both registered providers and the backward-compatible legacy detection path;
+- image and rich-video social metadata;
+- a default social image fallback;
+- backward-compatible Geeklog page detection when no provider participates.
+
+It does not provide sharing buttons, reactions, Facebook Like widgets or
+Facebook Comments widgets. Those legacy features were removed in 2.0.
+
+Themes such as Eclipse may provide Facebook, X/Twitter or LinkedIn share
+buttons independently. Those buttons are complementary to OGP: the theme
+initiates the share, while OGP controls the metadata read by the destination
+service.
+
+## Interoperability
+
+Compatible content plugins may call `OGP_registerSocialMetadata()` before
+Geeklog renders the final document header.
+
+No content plugin is required. If no provider registers metadata, OGP follows
+its historical rendering path.
+
+## Install
+
+Install the plugin through Geeklog's Plugin Administration using the
+installable archive.

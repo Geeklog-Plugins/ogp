@@ -36,7 +36,7 @@ $_OGP_CONF = array();
 
 // Plugin info
 
-$_OGP_CONF['pi_version'] = '1.2.3';										// Plugin Version
+$_OGP_CONF['pi_version'] = '2.0.0';										// Plugin Version
 $_OGP_CONF['gl_version'] = '1.6.0';										// GL Version plugin for
 $_OGP_CONF['pi_url']     = 'https://github.com/Geeklog-Plugins/ogp';	// Plugin Homepage
 $_OGP_CONF['GROUPS']     = array(
@@ -47,13 +47,6 @@ $_OGP_CONF['FEATURES']   = array(
 );
 $_OGP_CONF['MAPPINGS']   = array(
 		'ogp.edit' => array('Open Graph Protocol Admin'),
-);
-
-$_OGP_CONF['LAYOUTS'] = array('standard', 'button_count', 'box_count');
-
-$_OGP_CONF['FONTS'] = array(
-	'', 'arial', 'lucida grande', 'segoe ui', 'tahoma', 'trebuchet ms',
-	'verdana',
 );
 
 // @see https://developers.facebook.com/docs/internationalization

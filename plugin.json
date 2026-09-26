@@ -1,6 +1,10 @@
 {
   "schema": 1,
   "id": "ogp",
-  "name": "ogp",
-  "icon": "admin/images/ogp.png"
+  "name": "Open Graph Protocol",
+  "icon": "admin/images/ogp.png",
+  "requires": {
+    "geeklog": "1.6.0",
+    "php": "5.6.4"
+  }
 }

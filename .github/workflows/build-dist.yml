@@ -1,0 +1,246 @@
+# OGP 2.0 release pipeline
+name: Validate and build OGP 2.0.0
+
+on:
+  push:
+    branches:
+      - develop-2.0
+    paths-ignore:
+      - 'dist/**'
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ogp-2.0-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php-lint:
+    name: PHP ${{ matrix.php }} compatibility
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - '5.6'
+          - '8.1'
+          - '8.3'
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Verify PHP minimum
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -r 'if (PHP_VERSION_ID < 50604) { fwrite(STDERR, "PHP 5.6.4+ required\n"); exit(1); }'
+
+      - name: Lint shipped PHP and INC files
+        shell: bash
+        run: |
+          set -euo pipefail
+          status=0
+          while IFS= read -r -d '' file; do
+            if ! php -l "$file"; then
+              status=1
+            fi
+          done < <(find . -type f \( -name '*.php' -o -name '*.inc' \) \
+            -not -path './.git/*' \
+            -not -path './dist/*' \
+            -print0)
+          exit "$status"
+
+  contract:
+    name: Release contract
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v5
+
+      - name: Validate version and compatibility metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq "\$_OGP_CONF['pi_version'] = '2.0.0';" config.php
+          grep -Fq "\$_OGP_CONF['gl_version'] = '1.6.0';" config.php
+          grep -Fq "version_compare(PHP_VERSION, '5.6.4', '>=')" autoinstall.php
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(Path('plugin.json').read_text(encoding='utf-8'))
+          assert data['schema'] == 1
+          assert data['id'] == 'ogp'
+          assert data['name'] == 'Open Graph Protocol'
+          assert data['requires']['geeklog'] == '1.6.0'
+          assert data['requires']['php'] == '5.6.4'
+          assert Path(data['icon']).is_file()
+          print('plugin.json compatibility metadata validated')
+          PY
+
+      - name: Validate optional-provider architecture
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'function OGP_registerSocialMetadata($metadata)' functions.inc
+          grep -Fq "if (empty(\$registered)) {" functions.inc
+          grep -Fq "array_key_exists(\$tag, \$autolinkModules)" functions.inc
+          grep -Fq 'Historical Geeklog page-detection path.' functions.inc
+          grep -Fq 'summary_large_image' functions.inc
+          grep -Fq "\$output['sp_page_title']" functions.inc
+          grep -Fq "pageTitleSelect" functions.inc
+          grep -Fq "\$A['page_title']" functions.inc
+          grep -Fq '($imageDimensions[0] < 200 || $imageDimensions[1] < 200)' functions.inc
+          grep -Fq "case '1.2.3':" functions.inc
+          grep -Fq "\$pi_version = '2.0.0';" functions.inc
+
+          if grep -Eq "['\"](maps|documents|videos|mediagallery)['\"]" functions.inc; then
+            echo 'OGP must not hard-code optional provider plugin identifiers.' >&2
+            exit 1
+          fi
+
+          for legacy in OGP_isFbUserIdSet OGP_isFbAppIdSet OGP_like OGP_comments plugin_getfootercode_ogp plugin_commentsupport_ogp; do
+            if grep -Fq "$legacy" functions.inc; then
+              echo "Obsolete social widget symbol remains in functions.inc: $legacy" >&2
+              exit 1
+            fi
+          done
+
+      - name: Validate distribution safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s autoinstall.php
+          test -s functions.inc
+          test -s config.php
+          test -s install_defaults.php
+          test -s configuration_validation.php
+          test -s public_html/index.php
+          test -s public_html/social-default.jpg
+          test -s admin/index.php
+          test -s admin/images/ogp.png
+          test -s README.md
+          test -s RELEASE_NOTES.md
+
+  build-dist:
+    name: Build installable archive
+    if: github.event_name != 'pull_request'
+    needs:
+      - php-lint
+      - contract
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout validated source
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Build OGP archive
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SOURCE_SHA="$(git rev-parse HEAD)"
+          ARCHIVE="ogp_2.0.0_1.6.0.zip"
+
+          rm -rf build
+          mkdir -p build/ogp dist
+          rm -f dist/ogp_*.zip dist/ogp_*.zip.sha256
+
+          rsync -a ./ build/ogp/ \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.gitignore' \
+            --exclude='dist/' \
+            --exclude='build/' \
+            --exclude='.idea/' \
+            --exclude='.vscode/'
+
+          cat > build/ogp/BUILD_INFO.txt <<EOF
+          OGP 2.0.0 installable archive
+          Minimum Geeklog: 1.6.0
+          Minimum PHP: 5.6.4
+          Source branch: develop-2.0
+          Source commit: ${SOURCE_SHA}
+          EOF
+
+          (
+            cd build
+            zip -qr "../dist/${ARCHIVE}" ogp
+          )
+
+          sha256sum "dist/${ARCHIVE}" > "dist/${ARCHIVE}.sha256"
+
+          echo "SOURCE_SHA=${SOURCE_SHA}" >> "$GITHUB_ENV"
+          echo "ARCHIVE=${ARCHIVE}" >> "$GITHUB_ENV"
+
+      - name: Verify installable archive
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          unzip -t "dist/${ARCHIVE}" >/dev/null
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/functions.inc'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/autoinstall.php'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/config.php'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/install_defaults.php'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/configuration_validation.php'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/plugin.json'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/BUILD_INFO.txt'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/admin/images/ogp.png'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/public_html/index.php'
+          unzip -Z1 "dist/${ARCHIVE}" | grep -qx 'ogp/public_html/social-default.jpg'
+
+          ! unzip -Z1 "dist/${ARCHIVE}" | grep -q '^ogp/.github/'
+          ! unzip -Z1 "dist/${ARCHIVE}" | grep -q '^ogp/dist/'
+          ! unzip -Z1 "dist/${ARCHIVE}" | grep -q '^ogp/build/'
+
+          unzip -p "dist/${ARCHIVE}" ogp/config.php | grep -Fq "\$_OGP_CONF['pi_version'] = '2.0.0';"
+          unzip -p "dist/${ARCHIVE}" ogp/config.php | grep -Fq "\$_OGP_CONF['gl_version'] = '1.6.0';"
+          unzip -p "dist/${ARCHIVE}" ogp/autoinstall.php | grep -Fq "version_compare(PHP_VERSION, '5.6.4', '>=')"
+          unzip -p "dist/${ARCHIVE}" ogp/functions.inc | grep -Fq 'function OGP_registerSocialMetadata($metadata)'
+
+      - name: Refuse stale archive commit
+        id: freshness
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin develop-2.0
+          BRANCH_SHA="$(git rev-parse origin/develop-2.0)"
+          if [ "$BRANCH_SHA" != "$SOURCE_SHA" ]; then
+            echo 'A newer source commit exists; archive will not be committed.' >&2
+            echo 'commit_archive=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'commit_archive=true' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit archive to dist
+        if: steps.freshness.outputs.commit_archive == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f dist/
+          if git diff --cached --quiet; then
+            echo 'No dist changes to commit.'
+            exit 0
+          fi
+          git commit -m "Build ogp_2.0.0_1.6.0.zip for ${SOURCE_SHA} [skip ci]"
+          git push origin HEAD:develop-2.0

@@ -39,7 +39,7 @@ if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== false) {
 function plugin_autoinstall_ogp($pi_name) {
     global $_OGP_CONF;
 
-    require_once __DIR__ . '/config.php';
+    require_once dirname(__FILE__) . '/config.php';
 
     return array(
         'info'      => array(
@@ -84,5 +84,5 @@ function plugin_load_configuration_ogp($pi_name) {
 function plugin_compatible_with_this_version_ogp($pi_name) {
     global $_CONF, $_DB_dbms;
 
-    return version_compare(PHP_VERSION, '5.0.0', '>=');
+    return version_compare(PHP_VERSION, '5.6.4', '>=');
 }
