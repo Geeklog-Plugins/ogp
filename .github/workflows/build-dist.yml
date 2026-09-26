@@ -98,6 +98,7 @@ jobs:
           set -euo pipefail
           grep -Fq 'function OGP_registerSocialMetadata($metadata)' functions.inc
           grep -Fq "if (empty(\$registered)) {" functions.inc
+          grep -Fq "array_key_exists(\$tag, \$autolinkModules)" functions.inc
           grep -Fq 'Historical OGP rendering path.' functions.inc
           grep -Fq "case '1.2.3':" functions.inc
           grep -Fq "\$pi_version = '2.0.0';" functions.inc
