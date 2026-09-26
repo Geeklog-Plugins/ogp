@@ -240,15 +240,22 @@ function plugin_getheadercode_ogp() {
             $sid = COM_applyFilter($sid);
             $sid = DB_escapeString($sid);
     
+            $pageTitleSelect = version_compare(VERSION, '1.7.0', '>=')
+                ? ', s.page_title'
+                : '';
+            $pageTitleGroup = version_compare(VERSION, '1.7.0', '>=')
+                ? ', page_title'
+                : '';
+
             if (version_compare(VERSION, '2.0.0') >= 0) {
-                $sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
+                $sql = "SELECT s.title{$pageTitleSelect}, s.introtext, s.bodytext, s.meta_description "
                      . "FROM {$_TABLES['stories']} AS s, {$_TABLES['topic_assignments']} AS ta "
                      . "WHERE (ta.type = 'article') AND (ta.id = s.sid) "
                      . "  AND (s.sid ='{$sid}') "
                      . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
                      . COM_getPermSQL('AND', 0, 2, 's')
                      . COM_getTopicSQL('AND', 0, 'ta')
-                     . "GROUP BY title, introtext, bodytext, meta_description ";
+                     . "GROUP BY title{$pageTitleGroup}, introtext, bodytext, meta_description ";
             } else {
                 $sql = "SELECT s.title, s.introtext, s.bodytext, s.meta_description "
                      . "FROM {$_TABLES['stories']} AS s "
@@ -258,7 +265,7 @@ function plugin_getheadercode_ogp() {
                      . "  AND (s.draft_flag = 0) AND (s.date < NOW()) "
                      . COM_getPermSQL('AND', 0, 2, 's')
                      . COM_getTopicSQL('AND', 0, 't')
-                     . "GROUP BY title, introtext, bodytext, meta_description ";
+                     . "GROUP BY title{$pageTitleGroup}, introtext, bodytext, meta_description ";
             }
     
             $result = DB_query($sql);
@@ -267,7 +274,9 @@ function plugin_getheadercode_ogp() {
                 $A = DB_fetchArray($result, false);
                 $A = array_map('stripslashes', $A);
     
-                $title     = $A['title'];
+                $title     = !empty($A['page_title'])
+                    ? $A['page_title']
+                    : $A['title'];
                 $introtext = OGP_replaceTags($A['introtext']);
                 $bodytext  = OGP_replaceTags($A['bodytext']);
                 $desc      = $A['meta_description'];
