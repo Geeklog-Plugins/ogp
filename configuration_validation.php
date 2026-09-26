@@ -30,7 +30,7 @@ if (stripos($_SERVER['PHP_SELF'], basename(__FILE__)) !== false) {
     die('This file can not be used on its own!');
 }
 
-require_once __DIR__ . '/install_defaults.php';
+require_once dirname(__FILE__) . '/install_defaults.php';
 
 // Open Graph Protocol Plugin Main Settings
 $_CONF_VALIDATE['ogp']['fb_user_ids']        = array('rule' => 'stringOrEmpty');
