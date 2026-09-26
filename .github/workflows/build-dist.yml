@@ -107,6 +107,13 @@ jobs:
             exit 1
           fi
 
+          for legacy in OGP_isFbUserIdSet OGP_isFbAppIdSet OGP_like OGP_comments plugin_getfootercode_ogp plugin_commentsupport_ogp; do
+            if grep -Fq "$legacy" functions.inc; then
+              echo "Obsolete social widget symbol remains in functions.inc: $legacy" >&2
+              exit 1
+            fi
+          done
+
       - name: Validate distribution safety
         shell: bash
         run: |
