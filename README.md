@@ -20,7 +20,7 @@ OGP 2.0 focuses on one responsibility: social metadata.
 It provides:
 
 - Open Graph metadata;
-- Twitter/X card metadata for registered providers;
+- Twitter/X card metadata for both registered providers and the backward-compatible legacy detection path;
 - image and rich-video social metadata;
 - a default social image fallback;
 - backward-compatible Geeklog page detection when no provider participates.
