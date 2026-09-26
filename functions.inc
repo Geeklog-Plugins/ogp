@@ -650,8 +650,17 @@ function plugin_upgrade_ogp() {
                 $pi_version = '1.2.3';
                 break;
 
-            default:
+            case '1.2.3':
+                // OGP 2.0.0 introduces provider interoperability without
+                // changing persisted configuration or database schema.
+                $pi_version = '2.0.0';
                 break;
+
+            default:
+                COM_errorLog(
+                    'OGP upgrade stopped: unsupported installed version ' . $pi_version
+                );
+                return false;
 
         }
     }
