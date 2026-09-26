@@ -596,8 +596,22 @@ function plugin_upgrade_ogp() {
                 break;
 
             case '1.2.3':
-                // OGP 2.0.0 introduces provider interoperability without
-                // changing persisted configuration or database schema.
+                // OGP 2.0.0 focuses exclusively on social metadata.
+                // Remove configuration entries that only served the obsolete
+                // Facebook Like/Comments widgets and SDK integration.
+                $c = config::get_instance();
+                if (method_exists($c, 'del')) {
+                    $legacySettings = array(
+                        'fb_user_ids', 'fb_app_id',
+                        'like_send', 'like_show_faces', 'like_style_layout',
+                        'like_width', 'like_verb', 'like_color', 'like_font',
+                        'comments_num_posts', 'comments_width', 'comments_color',
+                        'types', 'fs_like', 'fs_comments', 'fs_kinds'
+                    );
+                    foreach ($legacySettings as $legacySetting) {
+                        $c->del($legacySetting, 'ogp');
+                    }
+                }
                 $pi_version = '2.0.0';
                 break;
 
