@@ -76,6 +76,7 @@ function OGP_registerSocialMetadata($metadata)
     $allowed = array(
         'title', 'description', 'url', 'type', 'image',
         'image_width', 'image_height', 'image_alt',
+        'video', 'video_secure_url', 'video_type',
         'twitter_card', 'plugin', 'item_id', 'subtype'
     );
     $clean = array();
@@ -416,12 +417,32 @@ function plugin_getheadercode_ogp() {
         . '<meta property="og:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
 
     if (!empty($registered)) {
+        if (!empty($registered['image_alt']) && !empty($image)) {
+            $imageAlt = OGP_escValue($registered['image_alt']);
+            $retval .= '<meta property="og:image:alt" content="' . $imageAlt . '"' . XHTML . '>' . PHP_EOL;
+        }
+        if (!empty($registered['video'])) {
+            $video = OGP_escValue($registered['video']);
+            $retval .= '<meta property="og:video" content="' . $video . '"' . XHTML . '>' . PHP_EOL;
+        }
+        if (!empty($registered['video_secure_url'])) {
+            $videoSecureUrl = OGP_escValue($registered['video_secure_url']);
+            $retval .= '<meta property="og:video:secure_url" content="' . $videoSecureUrl . '"' . XHTML . '>' . PHP_EOL;
+        }
+        if (!empty($registered['video_type'])) {
+            $videoType = OGP_escValue($registered['video_type']);
+            $retval .= '<meta property="og:video:type" content="' . $videoType . '"' . XHTML . '>' . PHP_EOL;
+        }
+
         $twitterCard = OGP_escValue($twitterCard);
         $retval .= '<meta name="twitter:card" content="' . $twitterCard . '"' . XHTML . '>' . PHP_EOL
             . '<meta name="twitter:title" content="' . $title . '"' . XHTML . '>' . PHP_EOL
             . '<meta name="twitter:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
         if (!empty($image)) {
             $retval .= '<meta name="twitter:image" content="' . OGP_escValue($image) . '"' . XHTML . '>' . PHP_EOL;
+            if (!empty($registered['image_alt'])) {
+                $retval .= '<meta name="twitter:image:alt" content="' . OGP_escValue($registered['image_alt']) . '"' . XHTML . '>' . PHP_EOL;
+            }
         }
     }
 
