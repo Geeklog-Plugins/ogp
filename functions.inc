@@ -54,6 +54,45 @@ if (!is_callable('DB_escapeString')) {
     }
 }
 
+/**
+ * Register page-level social metadata supplied by another Geeklog plugin.
+ *
+ * The first successful registration wins for the current request so that
+ * multiple providers cannot overwrite each other accidentally.
+ *
+ * @param array $metadata
+ * @return bool
+ */
+function OGP_registerSocialMetadata($metadata)
+{
+    if (!is_array($metadata)) {
+        return false;
+    }
+
+    if (isset($GLOBALS['_OGP_PAGE_METADATA']) && is_array($GLOBALS['_OGP_PAGE_METADATA'])) {
+        return false;
+    }
+
+    $allowed = array(
+        'title', 'description', 'url', 'type', 'image',
+        'image_width', 'image_height', 'image_alt',
+        'twitter_card', 'plugin', 'item_id', 'subtype'
+    );
+    $clean = array();
+    foreach ($allowed as $key) {
+        if (array_key_exists($key, $metadata)) {
+            $clean[$key] = $metadata[$key];
+        }
+    }
+
+    if (empty($clean['title']) || empty($clean['url'])) {
+        return false;
+    }
+
+    $GLOBALS['_OGP_PAGE_METADATA'] = $clean;
+    return true;
+}
+
 // +---------------------------------------------------------------------------+
 // | Geeklog Plugin API Implementations                                        |
 // +---------------------------------------------------------------------------+
@@ -154,6 +193,33 @@ function plugin_getheadercode_ogp() {
     $image     = $_OGP_CONF['fb_default_img_url'];
     $url       = COM_getCurrentURL();
     $desc      = ($_CONF['meta_tags'] > 0) ? $_CONF['meta_description'] : $_CONF['site_slogan'];
+    $twitterCard = 'summary';
+
+    // Modern provider path: a plugin may register authoritative page metadata
+    // before Geeklog builds the final document header.
+    $registered = isset($GLOBALS['_OGP_PAGE_METADATA']) && is_array($GLOBALS['_OGP_PAGE_METADATA'])
+        ? $GLOBALS['_OGP_PAGE_METADATA']
+        : array();
+    if (!empty($registered)) {
+        if (!empty($registered['title'])) {
+            $title = $registered['title'];
+        }
+        if (isset($registered['description'])) {
+            $desc = $registered['description'];
+        }
+        if (!empty($registered['url'])) {
+            $url = $registered['url'];
+        }
+        if (!empty($registered['type'])) {
+            $type = $registered['type'];
+        }
+        if (!empty($registered['image'])) {
+            $image = $registered['image'];
+        }
+        if (!empty($registered['twitter_card'])) {
+            $twitterCard = $registered['twitter_card'];
+        }
+    }
 
     // Tags specific to Facebook
     $fb_user_ids = '';
@@ -171,8 +237,8 @@ function plugin_getheadercode_ogp() {
         COM_errorLog(OGP_str('fb_ids_not_set'));
     }
 
-    if ((strcasecmp($url, $_CONF['site_url'] . '/') === 0) ||
-        (strcasecmp($url, $_CONF['site_url']) === 0)) {
+    if (empty($registered) && ((strcasecmp($url, $_CONF['site_url'] . '/') === 0) ||
+        (strcasecmp($url, $_CONF['site_url']) === 0))) {
         // Site HOME
         $type = 'website';
     } elseif (stripos($url, $_CONF['site_url'] . '/article.php') === 0) {
@@ -345,6 +411,16 @@ function plugin_getheadercode_ogp() {
         . '<meta property="og:image:width" content="' . $imageDimensions[0] . '"' . XHTML . '>' . PHP_EOL
         . '<meta property="og:image:height" content="' . $imageDimensions[1] . '"' . XHTML . '>' . PHP_EOL
         . '<meta property="og:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
+
+    if (!empty($registered)) {
+        $twitterCard = OGP_escValue($twitterCard);
+        $retval .= '<meta name="twitter:card" content="' . $twitterCard . '"' . XHTML . '>' . PHP_EOL
+            . '<meta name="twitter:title" content="' . $title . '"' . XHTML . '>' . PHP_EOL
+            . '<meta name="twitter:description" content="' . $desc . '"' . XHTML . '>' . PHP_EOL;
+        if (!empty($image)) {
+            $retval .= '<meta name="twitter:image" content="' . OGP_escValue($image) . '"' . XHTML . '>' . PHP_EOL;
+        }
+    }
 
     if (!empty($fb_app_id)) {
         $fb_app_id = OGP_escValue($fb_app_id);
