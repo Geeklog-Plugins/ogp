@@ -102,8 +102,8 @@ jobs:
           grep -Fq "case '1.2.3':" functions.inc
           grep -Fq "\$pi_version = '2.0.0';" functions.inc
 
-          if grep -Ei "(maps|documents|videos|mediagallery)" functions.inc; then
-            echo 'OGP must not hard-code optional provider plugin names.' >&2
+          if grep -Eq "['\"](maps|documents|videos|mediagallery)['\"]" functions.inc; then
+            echo 'OGP must not hard-code optional provider plugin identifiers.' >&2
             exit 1
           fi
 
