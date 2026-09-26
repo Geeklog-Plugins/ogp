@@ -130,12 +130,18 @@ function OGP_replaceTags($content) {
     while (($start_pos < MBYTE_strlen($content))
      && preg_match('/\[(.+?)\s*:([^\]]*)\]/ms', $content, $match, 0, $start_pos)) {
         $tag      = $match[1];
-        $module   = $autolinkModules[$tag];
         $tagstr   = $match[0];
         $length   = MBYTE_strlen($tagstr);
-        $function = 'plugin_autotags_' . $module;
 
-        if (array_key_exists($tag, $autolinkModules) && function_exists($function)) {
+        if (array_key_exists($tag, $autolinkModules)) {
+            $module = $autolinkModules[$tag];
+            $function = 'plugin_autotags_' . $module;
+        } else {
+            $module = '';
+            $function = '';
+        }
+
+        if (!empty($module) && function_exists($function)) {
             $params = explode(' ', $match[2]);
 
             if (is_array($params) && (count($params) > 0)) {
