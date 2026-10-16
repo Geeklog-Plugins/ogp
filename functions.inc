@@ -702,6 +702,10 @@ function plugin_upgrade_ogp() {
                 }
                 $pi_version = '2.0.0';
                 break;
+            case '2.0.0':
+                // Metadata-only upgrade: no schema or configuration migration.
+                $pi_version = '2.1.0';
+                break;
 
             default:
                 COM_errorLog(
