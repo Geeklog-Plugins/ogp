@@ -99,6 +99,50 @@ function OGP_registerSocialMetadata($metadata)
 // +---------------------------------------------------------------------------+
 
 /**
+ * Identify a topic listing with Geeklog's canonical topic URL.
+ *
+ * TOPIC_currentTopic() may also describe the session's previous topic;
+ * verify the requested URL before using it as page-level metadata.
+ */
+function OGP_isTopicListing($url, $tid)
+{
+    if (empty($tid) || !function_exists('TOPIC_getUrl')) {
+        return false;
+    }
+
+    $expected = parse_url(TOPIC_getUrl($tid));
+    $actual = parse_url($url);
+    if (!is_array($expected) || !is_array($actual)) {
+        return false;
+    }
+
+    if (isset($expected['host'], $actual['host'])
+        && strcasecmp($expected['host'], $actual['host']) !== 0) {
+        return false;
+    }
+
+    $expectedPath = isset($expected['path']) ? rtrim($expected['path'], '/') : '';
+    $actualPath = isset($actual['path']) ? rtrim($actual['path'], '/') : '';
+    if ($expectedPath !== $actualPath
+        && strpos($actualPath, $expectedPath . '/') !== 0) {
+        return false;
+    }
+
+    // Query-form topic URLs must carry the same topic parameter.
+    if (!empty($expected['query'])) {
+        parse_str($expected['query'], $expectedQuery);
+        parse_str(isset($actual['query']) ? $actual['query'] : '', $actualQuery);
+        foreach ($expectedQuery as $key => $value) {
+            if (!isset($actualQuery[$key]) || $actualQuery[$key] !== $value) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+/**
 * Returns a URL to icon
 */
 function plugin_geticon_ogp() {
@@ -291,10 +335,11 @@ function plugin_getheadercode_ogp() {
                     $desc = $introtext;
                 }
             }
-        } elseif (preg_match("@index\.php\?topic=(.+)$@i", $url, $match)) {
-            // Topic archive/listing
+        } elseif (function_exists('TOPIC_currentTopic')
+            && OGP_isTopicListing($url, TOPIC_currentTopic())) {
+            // Topic archive/listing using the native Geeklog topic URL.
             $type = 'website';
-            $tid = $match[1];
+            $tid = TOPIC_currentTopic();
             $tid = DB_escapeString(COM_applyFilter($tid));
             $sql = "SELECT topic, imageurl, meta_description "
                  . "FROM {$_TABLES['topics']} "
