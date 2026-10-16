@@ -98,6 +98,8 @@ jobs:
         run: |
           set -euo pipefail
           grep -Fq 'function OGP_registerSocialMetadata($metadata)' functions.inc
+          grep -Fq 'function OGP_articleFallbackDescription($intro, $limit = 180)' functions.inc
+          grep -Fq '$desc = OGP_articleFallbackDescription($introtext);' functions.inc
           grep -Fq "if (empty(\$registered)) {" functions.inc
           grep -Fq "array_key_exists(\$tag, \$autolinkModules)" functions.inc
           grep -Fq 'Historical Geeklog page-detection path.' functions.inc
