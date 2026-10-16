@@ -1,8 +1,16 @@
+## Current milestone — OGP 2.1.0
+
+- [x] Native Geeklog topic URL detection for rewritten topic listings.
+- [x] Topic SEO title preferred for Open Graph metadata.
+- [x] 2.0.0 → 2.1.0 upgrade version transition.
+- [ ] Validate topic metadata and permissions on live Geeklog 2.2.2 sites.
+- [ ] Confirm release workflow archive and checksum.
+
 # OGP Plugin Roadmap
 
 ## Target
 
-Modernize the OGP plugin for Geeklog 2.2.2 and PHP 8.1+ while preserving its historical Facebook features.
+Modernize the OGP plugin for Geeklog 2.2.2 and PHP 8.1+ while preserving the social-metadata-only architecture introduced in 2.0.0.
 
 The long-term role of OGP is to become Geeklog's central social metadata renderer:
 
