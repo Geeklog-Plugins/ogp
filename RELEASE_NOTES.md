@@ -2,6 +2,8 @@
 
 ## Changes since 2.0.0
 
+- Normalize article introduction text and limit auto-generated social descriptions to approximately 180 characters at a word boundary. Explicit article SEO descriptions remain unchanged.
+
 - Identify Geeklog topic listings using the native `TOPIC_currentTopic()` and `TOPIC_getUrl()` APIs, including rewritten URLs such as `/index.php/topic/example`.
 - Prefer the configured topic SEO title (`topics.title`) over its display name, with fallback to `topics.topic`.
 - Preserve the first-wins `OGP_registerSocialMetadata()` provider precedence and existing access checks.
