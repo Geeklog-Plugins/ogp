@@ -99,6 +99,44 @@ function OGP_registerSocialMetadata($metadata)
 // +---------------------------------------------------------------------------+
 
 /**
+ * Build a concise social description from an article intro only when its
+ * explicitly configured SEO description is empty.
+ *
+ * @param string $intro Rendered article introduction
+ * @param int $limit Maximum description length
+ * @return string
+ */
+function OGP_articleFallbackDescription($intro, $limit = 180)
+{
+    // Do not publish script/style content or HTML markup in social cards.
+    $intro = preg_replace('@<(script|style)\\b[^>]*>.*?</\\1\\s*>@is', ' ', $intro);
+    $intro = strip_tags($intro);
+    $intro = html_entity_decode($intro, ENT_QUOTES, 'UTF-8');
+    $intro = preg_replace('/\\[[a-z][a-z0-9_]*:[^\\]]*\\]/i', ' ', $intro);
+    $intro = preg_replace('/\\s+/u', ' ', $intro);
+    $intro = trim($intro);
+    if ($intro === '') {
+        return '';
+    }
+
+    if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+        if (mb_strlen($intro, 'UTF-8') <= $limit) {
+            return $intro;
+        }
+        $short = mb_substr($intro, 0, $limit + 1, 'UTF-8');
+    } else {
+        if (strlen($intro) <= $limit) {
+            return $intro;
+        }
+        $short = substr($intro, 0, $limit + 1);
+    }
+
+    // Drop the unfinished last word where possible.
+    $short = preg_replace('/\\s+\\S*$/u', '', $short);
+    return rtrim($short, " \\t\\n\\r\\0\\x0B,;:") . '…';
+}
+
+/**
  * Identify a topic listing with Geeklog's canonical topic URL.
  *
  * TOPIC_currentTopic() may also describe the session's previous topic;
@@ -331,8 +369,8 @@ function plugin_getheadercode_ogp() {
                     $image = OGP_fixUri($image);
                 }
     
-                if (empty($desc)) {
-                    $desc = $introtext;
+                if (trim($desc) === '') {
+                    $desc = OGP_articleFallbackDescription($introtext);
                 }
             }
         } elseif (function_exists('TOPIC_currentTopic')
