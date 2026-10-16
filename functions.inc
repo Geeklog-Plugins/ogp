@@ -341,7 +341,7 @@ function plugin_getheadercode_ogp() {
             $type = 'website';
             $tid = TOPIC_currentTopic();
             $tid = DB_escapeString(COM_applyFilter($tid));
-            $sql = "SELECT topic, imageurl, meta_description "
+            $sql = "SELECT topic, title, imageurl, meta_description "
                  . "FROM {$_TABLES['topics']} "
                  . "WHERE (tid ='{$tid}') "
                  . COM_getTopicSQL('AND', 0);
@@ -351,7 +351,7 @@ function plugin_getheadercode_ogp() {
                 $A = DB_fetchArray($result, false);
                 $A = array_map('stripslashes', $A);
     
-                $title = $A['topic'];
+                $title = !empty($A['title']) ? $A['title'] : $A['topic'];
                 $image = OGP_fixUri($A['imageurl']);
                 $desc  = $A['meta_description'];
     
