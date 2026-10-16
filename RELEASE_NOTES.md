@@ -1,4 +1,26 @@
-# OGP 2.0.0 release notes
+# OGP 2.1.0 release notes
+
+## Changes since 2.0.0
+
+- Normalize article introduction text and limit auto-generated social descriptions to approximately 180 characters at a word boundary. Explicit article SEO descriptions remain unchanged.
+
+- Identify Geeklog topic listings using the native `TOPIC_currentTopic()` and `TOPIC_getUrl()` APIs, including rewritten URLs such as `/index.php/topic/example`.
+- Prefer the configured topic SEO title (`topics.title`) over its display name, with fallback to `topics.topic`.
+- Preserve the first-wins `OGP_registerSocialMetadata()` provider precedence and existing access checks.
+- Support in-place upgrades from OGP 2.0.0 to 2.1.0 with no database schema or persisted configuration migration.
+- Build `dist/ogp_2.1.0_1.6.0.zip` and its SHA-256 checksum through GitHub Actions on the `develop_2.1.0` branch.
+
+## Compatibility
+
+Minimum Geeklog: 1.6.0. Minimum PHP: 5.6.4. CI lint matrix: PHP 5.6, 8.1, and 8.3.
+
+## Validation
+
+GitHub Actions validates syntax, version metadata and installable archive contents. Runtime topic, pagination, ACL and social-card tests against a live Geeklog installation are still required before release.
+
+---
+
+# OGP 2.0.0 release notes (previous release)
 
 OGP 2.0.0 modernizes social metadata interoperability while preserving the historical Open Graph behavior of the plugin when no modern content provider participates.
 
@@ -70,7 +92,7 @@ Unknown installed versions now stop the upgrade cleanly instead of risking an en
 
 ## Release engineering
 
-The `develop-2.0` branch validates all shipped PHP and INC files on PHP 5.6, 8.1 and 8.3 before packaging.
+The former `develop-2.0` branch validates all shipped PHP and INC files on PHP 5.6, 8.1 and 8.3 before packaging.
 
 Successful branch builds automatically create and commit:
 

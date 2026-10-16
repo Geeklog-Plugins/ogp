@@ -13,9 +13,9 @@ authoritative page-level social metadata without duplicating rendering logic.
 - Geeklog 1.6.0 or newer
 - PHP 5.6.4 or newer (including PHP 8.1/8.3)
 
-## OGP 2.0 scope
+## OGP 2.1.0 scope
 
-OGP 2.0 focuses on one responsibility: social metadata.
+OGP 2.1.0 continues to focus on one responsibility: social metadata.
 
 It provides:
 
@@ -26,7 +26,7 @@ It provides:
 - backward-compatible Geeklog page detection when no provider participates.
 
 It does not provide sharing buttons, reactions, Facebook Like widgets or
-Facebook Comments widgets. Those legacy features were removed in 2.0.
+Facebook Comments widgets. Those legacy features were removed in 2.0.0.
 
 Themes such as Eclipse may provide Facebook, X/Twitter or LinkedIn share
 buttons independently. Those buttons are complementary to OGP: the theme
@@ -45,3 +45,9 @@ its historical rendering path.
 
 Install the plugin through Geeklog's Plugin Administration using the
 installable archive.
+
+## OGP 2.1.0 topic metadata
+
+Topic listing detection now relies on Geeklog's `TOPIC_currentTopic()` and `TOPIC_getUrl()` rather than a query-only URL expression. It supports rewritten topic URLs and prefers the configured topic SEO title. Registered metadata providers continue to take precedence.
+
+Installable archive: `dist/ogp_2.1.0_1.6.0.zip` (minimum Geeklog 1.6.0, PHP 5.6.4).
